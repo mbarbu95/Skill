@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PBQ - Algoritmi de criptografie</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #617085;
+      --line: #d6dde8;
+      --accent: #7c3aed;
+      --accent-soft: #f1ebff;
+      --good: #16834d;
+      --bad: #bd3f35;
+      --warn: #946200;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 800;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.55fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .bank {
+      display: grid;
+      gap: 9px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px 11px;
+      cursor: grab;
+      user-select: none;
+      font-weight: 800;
+      line-height: 1.25;
+      transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+
+    .item small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .item:active {
+      cursor: grabbing;
+    }
+
+    .item.dragging {
+      opacity: 0.55;
+      transform: scale(0.98);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #4c1d95;
+    }
+
+    .task-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .task-note {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .targets.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .target {
+      min-height: 230px;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 12px;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .target.over {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .target.correct {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .target.wrong {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .target h3 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
+
+    .target p {
+      min-height: 40px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .drop-slot {
+      min-height: 142px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .empty {
+      align-self: center;
+      color: #8693a7;
+      font-size: 14px;
+    }
+
+    .expected {
+      display: none;
+      margin-top: 9px;
+      color: var(--warn);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .show-answer .expected {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 12px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 940px) {
+      header,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .score,
+      .task-note {
+        text-align: left;
+      }
+
+      .targets,
+      .targets.three {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>PBQ: Algoritmi de criptografie</h1>
+        <p>Trage fiecare algoritm in categoria corecta, apoi verifica scorul.</p>
+      </div>
+      <div class="score" id="score">Scor: 0 / 0</div>
+    </header>
+
+    <section class="layout" aria-label="Simulare drag and drop pentru criptografie">
+      <aside class="panel">
+        <h2>Algoritmi</h2>
+        <div class="bank" id="itemBank"></div>
+      </aside>
+
+      <section class="panel">
+        <nav class="tabs" id="tabs" aria-label="Tipuri de exercitii"></nav>
+        <div class="task-head">
+          <h2 id="taskTitle">Exercitiu</h2>
+          <div class="task-note" id="taskNote"></div>
+        </div>
+        <div class="targets" id="targets"></div>
+        <div class="actions">
+          <button class="primary" id="checkBtn" type="button">Verifica</button>
+          <button class="secondary" id="resetBtn" type="button">Reseteaza</button>
+          <button class="secondary" id="shuffleBtn" type="button">Amesteca</button>
+          <button class="secondary" id="answersBtn" type="button">Arata raspunsurile</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const tasks = [
+      {
+        id: "sym-asym",
+        title: "Symmetric vs Asymmetric",
+        note: "Pentru examene: cheia comuna = symmetric, pereche public/private = asymmetric.",
+        categories: [
+          {
+            id: "symmetric",
+            title: "Symmetric",
+            description: "Foloseste aceeasi cheie pentru criptare si decriptare."
+          },
+          {
+            id: "asymmetric",
+            title: "Asymmetric",
+            description: "Foloseste cheie publica si cheie privata."
+          }
+        ],
+        items: [
+          { id: "aes", text: "AES", detail: "Advanced Encryption Standard", answer: "symmetric" },
+          { id: "des", text: "DES", detail: "Algoritm vechi, 56-bit key", answer: "symmetric" },
+          { id: "3des", text: "3DES", detail: "Triple DES", answer: "symmetric" },
+          { id: "blowfish", text: "Blowfish", detail: "Block cipher simetric", answer: "symmetric" },
+          { id: "twofish", text: "Twofish", detail: "Block cipher simetric", answer: "symmetric" },
+          { id: "rc4", text: "RC4", detail: "Stream cipher vechi", answer: "symmetric" },
+          { id: "chacha20", text: "ChaCha20", detail: "Stream cipher modern", answer: "symmetric" },
+          { id: "rsa", text: "RSA", detail: "Cheie publica/privata", answer: "asymmetric" },
+          { id: "ecc", text: "ECC", detail: "Elliptic Curve Cryptography", answer: "asymmetric" },
+          { id: "elgamal", text: "ElGamal", detail: "Criptografie cu cheie publica", answer: "asymmetric" },
+          { id: "dh", text: "Diffie-Hellman", detail: "Schimb de chei", answer: "asymmetric" },
+          { id: "ecdhe", text: "ECDHE", detail: "Schimb de chei cu curbe eliptice", answer: "asymmetric" },
+          { id: "dsa", text: "DSA", detail: "Semnaturi digitale", answer: "asymmetric" },
+          { id: "ecdsa", text: "ECDSA", detail: "Semnaturi digitale cu ECC", answer: "asymmetric" }
+        ]
+      },
+      {
+        id: "cipher-type",
+        title: "Block, Stream sau Asymmetric",
+        note: "Clasificare mai fina: block cipher, stream cipher sau algoritm asymmetric.",
+        categories: [
+          {
+            id: "block",
+            title: "Block Cipher",
+            description: "Cripteaza datele in blocuri."
+          },
+          {
+            id: "stream",
+            title: "Stream Cipher",
+            description: "Cripteaza fluxul de date bit/byte cu bit/byte."
+          },
+          {
+            id: "public-key",
+            title: "Asymmetric",
+            description: "Foloseste pereche de chei public/private."
+          }
+        ],
+        items: [
+          { id: "aes2", text: "AES", detail: "Block cipher", answer: "block" },
+          { id: "des2", text: "DES", detail: "Block cipher", answer: "block" },
+          { id: "3des2", text: "3DES", detail: "Block cipher", answer: "block" },
+          { id: "blowfish2", text: "Blowfish", detail: "Block cipher", answer: "block" },
+          { id: "twofish2", text: "Twofish", detail: "Block cipher", answer: "block" },
+          { id: "rc42", text: "RC4", detail: "Stream cipher", answer: "stream" },
+          { id: "chacha202", text: "ChaCha20", detail: "Stream cipher", answer: "stream" },
+          { id: "salsa20", text: "Salsa20", detail: "Stream cipher", answer: "stream" },
+          { id: "rsa2", text: "RSA", detail: "Public key", answer: "public-key" },
+          { id: "ecc2", text: "ECC", detail: "Public key family", answer: "public-key" },
+          { id: "dh2", text: "Diffie-Hellman", detail: "Key exchange", answer: "public-key" },
+          { id: "ecdsa2", text: "ECDSA", detail: "Digital signature", answer: "public-key" }
+        ]
+      },
+      {
+        id: "exam-clues",
+        title: "Indiciu de examen",
+        note: "Potriveste tehnologia cu rolul pe care il are cel mai des in examene.",
+        categories: [
+          {
+            id: "fast-data",
+            title: "Criptare rapida date",
+            description: "Folosita pentru volume mari de date."
+          },
+          {
+            id: "key-exchange",
+            title: "Schimb de chei",
+            description: "Ajuta doua parti sa obtina o cheie comuna."
+          },
+          {
+            id: "signature",
+            title: "Semnatura digitala",
+            description: "Autenticitate, integritate si non-repudiere."
+          }
+        ],
+        items: [
+          { id: "aes3", text: "AES", detail: "Criptare simetrica moderna", answer: "fast-data" },
+          { id: "chacha203", text: "ChaCha20", detail: "Criptare rapida stream", answer: "fast-data" },
+          { id: "3des3", text: "3DES", detail: "Criptare simetrica legacy", answer: "fast-data" },
+          { id: "dh3", text: "Diffie-Hellman", detail: "Key agreement", answer: "key-exchange" },
+          { id: "ecdh3", text: "ECDH", detail: "Key agreement cu curbe eliptice", answer: "key-exchange" },
+          { id: "ecdhe3", text: "ECDHE", detail: "Ephemeral key exchange", answer: "key-exchange" },
+          { id: "dsa3", text: "DSA", detail: "Digital Signature Algorithm", answer: "signature" },
+          { id: "ecdsa3", text: "ECDSA", detail: "Semnaturi cu ECC", answer: "signature" },
+          { id: "rsa3", text: "RSA", detail: "Poate fi folosit si pentru semnaturi", answer: "signature" }
+        ]
+      }
+    ];
+
+    const itemBank = document.getElementById("itemBank");
+    const tabs = document.getElementById("tabs");
+    const targets = document.getElementById("targets");
+    const taskTitle = document.getElementById("taskTitle");
+    const taskNote = document.getElementById("taskNote");
+    const score = document.getElementById("score");
+    const feedback = document.getElementById("feedback");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const answersBtn = document.getElementById("answersBtn");
+
+    let activeTaskId = tasks[0].id;
+    let showAnswers = false;
+
+    function activeTask() {
+      return tasks.find((task) => task.id === activeTaskId);
+    }
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - 0.5);
+    }
+
+    function currentDragged() {
+      return document.querySelector(".item.dragging");
+    }
+
+    function makeItem(item) {
+      const node = document.createElement("div");
+      node.className = "item";
+      node.draggable = true;
+      node.dataset.itemId = item.id;
+      node.dataset.answer = item.answer;
+      node.innerHTML = `${item.text}<small>${item.detail}</small>`;
+      node.addEventListener("dragstart", () => node.classList.add("dragging"));
+      node.addEventListener("dragend", () => node.classList.remove("dragging"));
+      return node;
+    }
+
+    function makeEmptyText() {
+      const node = document.createElement("span");
+      node.className = "empty";
+      node.textContent = "Plaseaza raspunsurile aici";
+      return node;
+    }
+
+    function prepareDropZone(zone) {
+      zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("over");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("over");
+      });
+
+      zone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        zone.classList.remove("over");
+        const dragged = currentDragged();
+        if (!dragged) return;
+
+        const empty = zone.querySelector(".empty");
+        if (empty) empty.remove();
+        zone.appendChild(dragged);
+
+        fillEmptySlots();
+        clearResults();
+      });
+    }
+
+    function renderTabs() {
+      tabs.replaceChildren();
+      tasks.forEach((task) => {
+        const button = document.createElement("button");
+        button.className = `tab${task.id === activeTaskId ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = task.title;
+        button.addEventListener("click", () => {
+          activeTaskId = task.id;
+          showAnswers = false;
+          render();
+        });
+        tabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      const task = activeTask();
+      renderTabs();
+      itemBank.replaceChildren();
+      targets.replaceChildren();
+      feedback.textContent = "";
+      taskTitle.textContent = task.title;
+      taskNote.textContent = task.note;
+      score.textContent = `Scor: 0 / ${task.items.length}`;
+      targets.classList.toggle("three", task.categories.length === 3);
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+
+      shuffle(task.items).forEach((item) => itemBank.appendChild(makeItem(item)));
+
+      task.categories.forEach((category) => {
+        const target = document.createElement("article");
+        target.className = `target${showAnswers ? " show-answer" : ""}`;
+        target.dataset.category = category.id;
+
+        const title = document.createElement("h3");
+        title.textContent = category.title;
+
+        const description = document.createElement("p");
+        description.textContent = category.description;
+
+        const slot = document.createElement("div");
+        slot.className = "drop-slot";
+        slot.appendChild(makeEmptyText());
+
+        const expected = document.createElement("div");
+        expected.className = "expected";
+        expected.textContent = expectedTextForCategory(task, category.id);
+
+        target.append(title, description, slot, expected);
+        targets.appendChild(target);
+        prepareDropZone(slot);
+      });
+
+      prepareDropZone(itemBank);
+    }
+
+    function expectedTextForCategory(task, categoryId) {
+      const answers = task.items
+        .filter((item) => item.answer === categoryId)
+        .map((item) => item.text);
+      return answers.length ? `Raspuns corect: ${answers.join(", ")}` : "Raspuns corect: niciun item";
+    }
+
+    function fillEmptySlots() {
+      document.querySelectorAll(".drop-slot").forEach((slot) => {
+        if (!slot.querySelector(".item") && !slot.querySelector(".empty")) {
+          slot.appendChild(makeEmptyText());
+        }
+      });
+    }
+
+    function clearResults() {
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.remove("correct", "wrong");
+      });
+      feedback.textContent = "";
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll(".drop-slot .item").forEach((item) => itemBank.appendChild(item));
+      fillEmptySlots();
+      clearResults();
+      score.textContent = `Scor: 0 / ${activeTask().items.length}`;
+    }
+
+    function checkAnswers() {
+      const task = activeTask();
+      let correct = 0;
+
+      task.items.forEach((item) => {
+        const node = document.querySelector(`[data-item-id="${item.id}"]`);
+        const placedCategory = node.closest(".target")?.dataset.category;
+        if (placedCategory === item.answer) correct += 1;
+      });
+
+      document.querySelectorAll(".target").forEach((target) => {
+        const placed = [...target.querySelectorAll(".item")];
+        const hasItems = placed.length > 0;
+        const allCorrect = placed.every((node) => node.dataset.answer === target.dataset.category);
+        target.classList.toggle("correct", hasItems && allCorrect);
+        target.classList.toggle("wrong", hasItems && !allCorrect);
+      });
+
+      score.textContent = `Scor: ${correct} / ${task.items.length}`;
+      feedback.textContent = correct === task.items.length
+        ? "Perfect. Toate algoritmii sunt clasificati corect."
+        : `Ai ${correct} raspunsuri corecte din ${task.items.length}.`;
+    }
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetAnswers);
+    shuffleBtn.addEventListener("click", render);
+    answersBtn.addEventListener("click", () => {
+      showAnswers = !showAnswers;
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.toggle("show-answer", showAnswers);
+      });
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+    });
+
+    render();
+  </script>
+</body>
+</html>
