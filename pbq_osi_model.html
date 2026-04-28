@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PBQ - Modelul OSI</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --ink: #15202b;
+      --muted: #607086;
+      --line: #d6dde7;
+      --accent: #0f766e;
+      --accent-soft: #e7f5f3;
+      --good: #16834d;
+      --bad: #bd3f35;
+      --warning: #9a6700;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 36px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 28px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score {
+      min-width: 168px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 800;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.5fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+    }
+
+    .panel h2 {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .bank {
+      display: grid;
+      gap: 9px;
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px 11px;
+      cursor: grab;
+      user-select: none;
+      font-weight: 700;
+      line-height: 1.25;
+      transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+
+    .item small {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .item:active {
+      cursor: grabbing;
+    }
+
+    .item.dragging {
+      opacity: 0.55;
+      transform: scale(0.98);
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #07514b;
+    }
+
+    .task-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .task-head h2 {
+      margin: 0;
+    }
+
+    .task-note {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .target {
+      min-height: 132px;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 12px;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .target.over {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .target.correct {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .target.wrong {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .target-header {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+
+    .layer {
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .layer small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .drop-slot {
+      min-height: 52px;
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .drop-slot.multi {
+      min-height: 92px;
+      align-content: start;
+    }
+
+    .drop-slot .item {
+      cursor: grab;
+      padding: 9px 10px;
+    }
+
+    .empty {
+      align-self: center;
+      color: #8591a4;
+      font-size: 14px;
+    }
+
+    .expected {
+      display: none;
+      margin-top: 8px;
+      color: var(--warning);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .show-answer .expected {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 12px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .score,
+      .task-note {
+        text-align: left;
+      }
+
+      .targets {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>PBQ: Modelul OSI</h1>
+        <p>Trage itemii in stratul OSI corect. Schimba scenariul din taburi si verifica scorul.</p>
+      </div>
+      <div class="score" id="score">Scor: 0 / 0</div>
+    </header>
+
+    <section class="layout" aria-label="Simulare drag and drop pentru modelul OSI">
+      <aside class="panel">
+        <h2>Itemi de plasat</h2>
+        <div class="bank" id="itemBank"></div>
+      </aside>
+
+      <section class="panel">
+        <nav class="tabs" id="tabs" aria-label="Tipuri de exercitii"></nav>
+        <div class="task-head">
+          <h2 id="taskTitle">Exercitiu</h2>
+          <div class="task-note" id="taskNote"></div>
+        </div>
+        <div class="targets" id="targets"></div>
+        <div class="actions">
+          <button class="primary" id="checkBtn" type="button">Verifica</button>
+          <button class="secondary" id="resetBtn" type="button">Reseteaza</button>
+          <button class="secondary" id="shuffleBtn" type="button">Amesteca</button>
+          <button class="secondary" id="answersBtn" type="button">Arata raspunsurile</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const layers = [
+      { id: "l1", label: "Layer 1", name: "Physical" },
+      { id: "l2", label: "Layer 2", name: "Data Link" },
+      { id: "l3", label: "Layer 3", name: "Network" },
+      { id: "l4", label: "Layer 4", name: "Transport" },
+      { id: "l5", label: "Layer 5", name: "Session" },
+      { id: "l6", label: "Layer 6", name: "Presentation" },
+      { id: "l7", label: "Layer 7", name: "Application" }
+    ];
+
+    const tasks = [
+      {
+        id: "pdu",
+        title: "Tipuri de date / PDU",
+        note: "Unele raspunsuri se folosesc pe mai multe straturi.",
+        mode: "multi",
+        items: [
+          { id: "bits", text: "Bits", detail: "Semnal electric/optic/radio", answers: ["l1"] },
+          { id: "frames", text: "Frames", detail: "Incapsulare cu MAC", answers: ["l2"] },
+          { id: "packets", text: "Packets", detail: "Incapsulare cu IP", answers: ["l3"] },
+          { id: "segments", text: "Segments", detail: "TCP", answers: ["l4"] },
+          { id: "datagrams", text: "Datagrams", detail: "UDP", answers: ["l4"] },
+          { id: "data567", text: "Data", detail: "Date pentru aplicatie", answers: ["l5", "l6", "l7"] }
+        ]
+      },
+      {
+        id: "addressing",
+        title: "Adrese si identificatori",
+        note: "Potriveste fiecare adresa sau identificator cu stratul corect.",
+        mode: "multi",
+        items: [
+          { id: "mac", text: "MAC address", detail: "Adresa fizica NIC", answers: ["l2"] },
+          { id: "ip", text: "IP address", detail: "IPv4 / IPv6", answers: ["l3"] },
+          { id: "tcpport", text: "TCP port", detail: "Ex: 443/TCP", answers: ["l4"] },
+          { id: "udpport", text: "UDP port", detail: "Ex: 53/UDP", answers: ["l4"] },
+          { id: "fqdn", text: "FQDN / URL", detail: "Ex: example.com", answers: ["l7"] },
+          { id: "socket", text: "Socket", detail: "IP + port", answers: ["l4"] }
+        ]
+      },
+      {
+        id: "devices",
+        title: "Dispozitive pe straturi",
+        note: "Concentreaza-te pe stratul principal folosit in examene.",
+        mode: "multi",
+        items: [
+          { id: "hub", text: "Hub", detail: "Repeta semnalul", answers: ["l1"] },
+          { id: "repeater", text: "Repeater", detail: "Regenerare semnal", answers: ["l1"] },
+          { id: "switch", text: "Switch", detail: "Comutare dupa MAC", answers: ["l2"] },
+          { id: "bridge", text: "Bridge", detail: "Segmenteaza Layer 2", answers: ["l2"] },
+          { id: "router", text: "Router", detail: "Rutare dupa IP", answers: ["l3"] },
+          { id: "l3switch", text: "Layer 3 switch", detail: "Switching + routing", answers: ["l3"] },
+          { id: "proxy", text: "Proxy server", detail: "Intermediaza aplicatii", answers: ["l7"] },
+          { id: "waf", text: "WAF", detail: "Filtrare HTTP/HTTPS", answers: ["l7"] }
+        ]
+      },
+      {
+        id: "protocols",
+        title: "Protocoale",
+        note: "Plaseaza protocoalele la stratul OSI cel mai acceptat in examene.",
+        mode: "multi",
+        items: [
+          { id: "ethernet", text: "Ethernet", detail: "Cadre si MAC", answers: ["l2"] },
+          { id: "arp", text: "ARP", detail: "IP catre MAC", answers: ["l2"] },
+          { id: "ipproto", text: "IP", detail: "Adresare/rutare", answers: ["l3"] },
+          { id: "icmp", text: "ICMP", detail: "Ping, erori IP", answers: ["l3"] },
+          { id: "tcp", text: "TCP", detail: "Conexiune, fiabilitate", answers: ["l4"] },
+          { id: "udp", text: "UDP", detail: "Fara conexiune", answers: ["l4"] },
+          { id: "tls", text: "TLS/SSL", detail: "Criptare sesiuni", answers: ["l6"] },
+          { id: "http", text: "HTTP", detail: "Web", answers: ["l7"] },
+          { id: "dns", text: "DNS", detail: "Nume catre IP", answers: ["l7"] },
+          { id: "smtp", text: "SMTP", detail: "Trimitere email", answers: ["l7"] }
+        ]
+      },
+      {
+        id: "oneToOne",
+        title: "Potrivire rapida",
+        note: "Fiecare strat primeste exact un raspuns.",
+        mode: "single",
+        items: [
+          { id: "cable", text: "Cabluri / semnal", detail: "Mediu fizic", answers: ["l1"] },
+          { id: "vlan", text: "VLAN", detail: "Separare Layer 2", answers: ["l2"] },
+          { id: "routing", text: "Routing", detail: "Alegere cale IP", answers: ["l3"] },
+          { id: "flow", text: "Flow control TCP", detail: "Transport end-to-end", answers: ["l4"] },
+          { id: "session", text: "Session management", detail: "Dialog intre sisteme", answers: ["l5"] },
+          { id: "encryption", text: "Encryption / compression", detail: "Format date", answers: ["l6"] },
+          { id: "userapps", text: "User-facing services", detail: "HTTP, DNS, SMTP", answers: ["l7"] }
+        ]
+      }
+    ];
+
+    const itemBank = document.getElementById("itemBank");
+    const tabs = document.getElementById("tabs");
+    const targets = document.getElementById("targets");
+    const taskTitle = document.getElementById("taskTitle");
+    const taskNote = document.getElementById("taskNote");
+    const score = document.getElementById("score");
+    const feedback = document.getElementById("feedback");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const answersBtn = document.getElementById("answersBtn");
+
+    let activeTaskId = tasks[0].id;
+    let showAnswers = false;
+
+    function activeTask() {
+      return tasks.find((task) => task.id === activeTaskId);
+    }
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - 0.5);
+    }
+
+    function currentDragged() {
+      return document.querySelector(".item.dragging");
+    }
+
+    function makeItem(item) {
+      const node = document.createElement("div");
+      node.className = "item";
+      node.draggable = true;
+      node.dataset.itemId = item.id;
+      node.dataset.answers = item.answers.join(",");
+      node.innerHTML = `${item.text}<small>${item.detail}</small>`;
+      node.addEventListener("dragstart", () => node.classList.add("dragging"));
+      node.addEventListener("dragend", () => node.classList.remove("dragging"));
+      return node;
+    }
+
+    function makeEmptyText(mode) {
+      const node = document.createElement("span");
+      node.className = "empty";
+      node.textContent = mode === "single" ? "Plaseaza un raspuns aici" : "Plaseaza unul sau mai multe raspunsuri";
+      return node;
+    }
+
+    function prepareDropZone(zone, mode) {
+      zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("over");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("over");
+      });
+
+      zone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        zone.classList.remove("over");
+        const dragged = currentDragged();
+        if (!dragged) return;
+
+        if (zone.classList.contains("drop-slot")) {
+          if (mode === "single") {
+            const existing = zone.querySelector(".item");
+            if (existing && existing !== dragged) itemBank.appendChild(existing);
+            zone.replaceChildren(dragged);
+          } else {
+            const empty = zone.querySelector(".empty");
+            if (empty) empty.remove();
+            zone.appendChild(dragged);
+          }
+        } else {
+          zone.appendChild(dragged);
+        }
+
+        fillEmptySlots();
+        clearResults();
+      });
+    }
+
+    function renderTabs() {
+      tabs.replaceChildren();
+      tasks.forEach((task) => {
+        const button = document.createElement("button");
+        button.className = `tab${task.id === activeTaskId ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = task.title;
+        button.addEventListener("click", () => {
+          activeTaskId = task.id;
+          showAnswers = false;
+          render();
+        });
+        tabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      const task = activeTask();
+      renderTabs();
+      itemBank.replaceChildren();
+      targets.replaceChildren();
+      feedback.textContent = "";
+      taskTitle.textContent = task.title;
+      taskNote.textContent = task.note;
+      score.textContent = `Scor: 0 / ${task.items.length}`;
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+
+      shuffle(task.items).forEach((item) => itemBank.appendChild(makeItem(item)));
+
+      layers.forEach((layer) => {
+        const target = document.createElement("article");
+        target.className = `target${showAnswers ? " show-answer" : ""}`;
+        target.dataset.layer = layer.id;
+
+        const header = document.createElement("div");
+        header.className = "target-header";
+        const title = document.createElement("div");
+        title.className = "layer";
+        title.innerHTML = `${layer.label} <small>${layer.name}</small>`;
+        header.appendChild(title);
+
+        const slot = document.createElement("div");
+        slot.className = `drop-slot${task.mode === "multi" ? " multi" : ""}`;
+        slot.appendChild(makeEmptyText(task.mode));
+
+        const expected = document.createElement("div");
+        expected.className = "expected";
+        expected.textContent = expectedTextForLayer(task, layer.id);
+
+        target.append(header, slot, expected);
+        targets.appendChild(target);
+        prepareDropZone(slot, task.mode);
+      });
+
+      prepareDropZone(itemBank, task.mode);
+    }
+
+    function expectedTextForLayer(task, layerId) {
+      const answers = task.items
+        .filter((item) => item.answers.includes(layerId))
+        .map((item) => item.text);
+      return answers.length ? `Raspuns corect: ${answers.join(", ")}` : "Raspuns corect: niciun item";
+    }
+
+    function fillEmptySlots() {
+      const task = activeTask();
+      document.querySelectorAll(".drop-slot").forEach((slot) => {
+        if (!slot.querySelector(".item") && !slot.querySelector(".empty")) {
+          slot.appendChild(makeEmptyText(task.mode));
+        }
+      });
+    }
+
+    function clearResults() {
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.remove("correct", "wrong");
+      });
+      feedback.textContent = "";
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll(".drop-slot .item").forEach((item) => itemBank.appendChild(item));
+      fillEmptySlots();
+      clearResults();
+      score.textContent = `Scor: 0 / ${activeTask().items.length}`;
+    }
+
+    function checkAnswers() {
+      const task = activeTask();
+      let correct = 0;
+
+      task.items.forEach((item) => {
+        const node = document.querySelector(`[data-item-id="${item.id}"]`);
+        const placedLayer = node.closest(".target")?.dataset.layer;
+        if (placedLayer && item.answers.includes(placedLayer)) correct += 1;
+      });
+
+      document.querySelectorAll(".target").forEach((target) => {
+        const placed = [...target.querySelectorAll(".item")];
+        const hasItems = placed.length > 0;
+        const allCorrect = placed.every((node) => node.dataset.answers.split(",").includes(target.dataset.layer));
+        target.classList.toggle("correct", hasItems && allCorrect);
+        target.classList.toggle("wrong", hasItems && !allCorrect);
+      });
+
+      score.textContent = `Scor: ${correct} / ${task.items.length}`;
+      feedback.textContent = correct === task.items.length
+        ? "Perfect. Toate itemii sunt plasati corect."
+        : `Ai ${correct} raspunsuri corecte din ${task.items.length}.`;
+    }
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetAnswers);
+    shuffleBtn.addEventListener("click", render);
+    answersBtn.addEventListener("click", () => {
+      showAnswers = !showAnswers;
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.toggle("show-answer", showAnswers);
+      });
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+    });
+
+    render();
+  </script>
+</body>
+</html>
