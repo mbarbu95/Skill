@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PBQ - Security+ Advanced Scenarios</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f9;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #617087;
+      --line: #d5dde8;
+      --accent: #0b5cad;
+      --accent-soft: #eaf3ff;
+      --good: #16834d;
+      --bad: #bd3f35;
+      --warn: #8a6100;
+      --shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1280px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 29px;
+      line-height: 1.18;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score {
+      min-width: 172px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(270px, 0.78fr) minmax(0, 1.65fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #083b73;
+    }
+
+    .scenario {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .scenario strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #2b3648;
+    }
+
+    .task-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .task-note {
+      max-width: 360px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .bank,
+    .drop-zone {
+      display: grid;
+      gap: 9px;
+      align-content: start;
+    }
+
+    .bank {
+      min-height: 220px;
+      border: 1px dashed transparent;
+      border-radius: 8px;
+    }
+
+    .bank.over,
+    .drop-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px 11px;
+      cursor: grab;
+      user-select: none;
+      font-weight: 900;
+      line-height: 1.25;
+      transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+
+    .item small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    .item:active {
+      cursor: grabbing;
+    }
+
+    .item.dragging {
+      opacity: 0.55;
+      transform: scale(0.98);
+    }
+
+    .item.good {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .item.bad {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .targets.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .targets.four {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .target {
+      min-height: 242px;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 12px;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .target.correct {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .target.wrong {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .target h3 {
+      margin: 0 0 5px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .target p {
+      min-height: 40px;
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .drop-zone {
+      min-height: 144px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .sequence-wrap {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .sequence-target {
+      min-height: 450px;
+    }
+
+    .sequence-zone {
+      min-height: 330px;
+      counter-reset: order;
+    }
+
+    .sequence-zone .item {
+      position: relative;
+      padding-left: 46px;
+    }
+
+    .sequence-zone .item::before {
+      counter-increment: order;
+      content: counter(order);
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: #083b73;
+      transform: translateY(-50%);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .empty {
+      align-self: center;
+      color: #8793a8;
+      font-size: 14px;
+    }
+
+    .expected {
+      display: none;
+      margin-top: 9px;
+      color: var(--warn);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .show-answer .expected {
+      display: block;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 12px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1080px) {
+      .targets.four {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .layout,
+      .task-head {
+        grid-template-columns: 1fr;
+      }
+
+      .score,
+      .task-note {
+        text-align: left;
+      }
+
+      .targets,
+      .targets.three,
+      .targets.four {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>PBQ: Security+ Advanced Scenarios</h1>
+        <p>Scenarii bazate pe materialele de curs: forensics, PKI, IAM, retea si atacuri.</p>
+      </div>
+      <div class="score" id="score">Scor: 0 / 0</div>
+    </header>
+
+    <section class="layout" aria-label="Simulare PBQ avansata">
+      <aside class="panel">
+        <h2>Itemi de plasat</h2>
+        <div class="bank" id="itemBank"></div>
+      </aside>
+
+      <section class="panel">
+        <nav class="tabs" id="tabs" aria-label="Exercitii"></nav>
+        <div class="task-head">
+          <div>
+            <h2 id="taskTitle">Exercitiu</h2>
+          </div>
+          <div class="task-note" id="taskNote"></div>
+        </div>
+        <div class="scenario">
+          <strong>Scenariu</strong>
+          <p id="scenarioText"></p>
+        </div>
+        <div id="workArea"></div>
+        <div class="actions">
+          <button class="primary" id="checkBtn" type="button">Verifica</button>
+          <button class="secondary" id="resetBtn" type="button">Reseteaza</button>
+          <button class="secondary" id="shuffleBtn" type="button">Amesteca</button>
+          <button class="secondary" id="answersBtn" type="button">Arata raspunsurile</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const tasks = [
+      {
+        id: "ir-order",
+        mode: "sequence",
+        title: "Incident Response + Digital Forensics",
+        note: "Ordoneaza actiunile corect. Volatile evidence se colecteaza inainte de oprirea atacului.",
+        scenario: "Un website al companiei este atacat activ. Echipa vrea sa identifice sursa, sa pastreze probele si apoi sa revina la functionare normala.",
+        sequence: [
+          { id: "net-traffic", text: "Captureaza traficul de retea", detail: "Packet capture pentru atac web/remote; este proba foarte volatila." },
+          { id: "ram", text: "Captureaza memoria si conexiunile live", detail: "RAM, procese, netstat/running connections inainte de reboot." },
+          { id: "time-offset", text: "Documenteaza timpul si time offset-ul", detail: "Ajuta la corelarea logurilor si a probelor din sisteme diferite." },
+          { id: "image", text: "Creeaza imagine forensica / forensic copy", detail: "Foloseste write blocker unde este cazul si pastreaza originalul intact." },
+          { id: "hash-coc", text: "Hash + chain of custody", detail: "Hash la inceput si final, bag/tag/log pentru cine a manipulat proba." },
+          { id: "logs", text: "Coreleaza firewall, NIPS, server si SIEM logs", detail: "SIEM-ul ajuta la observarea atacului pe mai multe sisteme." },
+          { id: "contain", text: "Containment, eradication, recovery", detail: "Opreste atacul, elimina cauza, restaureaza serviciile." },
+          { id: "report", text: "Raport si lessons learned", detail: "Documenteaza ce s-a intamplat si cum se previne reaparitia." }
+        ]
+      },
+      {
+        id: "pki-crypto",
+        mode: "categorize",
+        title: "PKI si Crypto Workflow",
+        note: "Plaseaza fiecare componenta dupa rolul ei intr-un scenariu de criptare, semnare si certificate.",
+        scenario: "Bob trimite date catre Carol printr-un canal securizat. Organizatia foloseste PKI, certificate X.509, CRL/OCSP si proceduri de recuperare a cheilor.",
+        categories: [
+          { id: "confidentiality", title: "Confidentiality / Encryption", description: "Cine cripteaza, cine decripteaza si ce folosesti pentru date in volum mare." },
+          { id: "signature", title: "Digital Signature", description: "Identitate, integritate si non-repudiere." },
+          { id: "validation", title: "Certificate Validation", description: "Verificarea increderii si a revocarii certificatelor." },
+          { id: "management", title: "Key / Cert Management", description: "Cereri, stocare de chei si recuperare." }
+        ],
+        items: [
+          { id: "recipient-public", text: "Receiver public key", detail: "Bob o foloseste ca sa cripteze pentru Carol.", answer: "confidentiality" },
+          { id: "recipient-private", text: "Receiver private key", detail: "Carol o foloseste ca sa decripteze.", answer: "confidentiality" },
+          { id: "aes-bulk", text: "AES / symmetric encryption", detail: "Rapid pentru volume mari de date.", answer: "confidentiality" },
+          { id: "sender-private", text: "Sender private key", detail: "Folosita pentru semnarea mesajului.", answer: "signature" },
+          { id: "sender-public", text: "Sender public key", detail: "Folosita pentru verificarea semnaturii.", answer: "signature" },
+          { id: "hash-integrity", text: "Hash inside signature", detail: "Ajuta la integritatea documentului semnat.", answer: "signature" },
+          { id: "crl", text: "CRL", detail: "Lista certificatelor revocate.", answer: "validation" },
+          { id: "ocsp", text: "OCSP / OCSP stapling", detail: "Verificare mai rapida a starii certificatului.", answer: "validation" },
+          { id: "pinning", text: "Certificate pinning", detail: "Reduce riscul certificatelor frauduloase.", answer: "validation" },
+          { id: "csr", text: "CSR", detail: "Cerere pentru emiterea unui certificat.", answer: "management" },
+          { id: "hsm", text: "HSM", detail: "Stocheaza si gestioneaza chei criptografice.", answer: "management" },
+          { id: "dra", text: "DRA + key escrow", detail: "Recuperare date cand cheia privata este corupta.", answer: "management" }
+        ]
+      },
+      {
+        id: "iam-aaa",
+        mode: "categorize",
+        title: "IAM, AAA si SSO",
+        note: "Diferentiaza identitatea, autentificarea, autorizarea si accounting-ul.",
+        scenario: "O companie are Active Directory, VPN, aplicatii cloud, MFA si echipamente Cisco. Trebuie sa alegi ce tehnologie rezolva fiecare parte din IAM.",
+        categories: [
+          { id: "identity-store", title: "Identity Store / Directory", description: "Unde se creeaza, cauta si gestioneaza obiectele de identitate." },
+          { id: "authentication", title: "Authentication / SSO", description: "Dovedeste cine este utilizatorul si permite login o singura data." },
+          { id: "authorization", title: "Authorization / Access", description: "Stabileste ce are voie sa faca utilizatorul dupa autentificare." },
+          { id: "accounting", title: "Accounting / Audit", description: "Pastreaza evidenta login/logout si a activitatii." }
+        ],
+        items: [
+          { id: "ldap", text: "LDAP", detail: "Cauta si gestioneaza obiecte in director.", answer: "identity-store" },
+          { id: "ldaps", text: "LDAPS", detail: "LDAP securizat cu SSL/TLS.", answer: "identity-store" },
+          { id: "idp", text: "Identity Provider", detail: "Valideaza identitatea pentru servicii cloud/federate.", answer: "identity-store" },
+          { id: "kerberos", text: "Kerberos tickets", detail: "Autentificare cu tichete, SSO si protectie replay prin timp.", answer: "authentication" },
+          { id: "saml", text: "SAML federation", detail: "Paseaza autentificarea intre organizatii sau IdP/SP.", answer: "authentication" },
+          { id: "totp", text: "TOTP", detail: "One-time password limitat in timp.", answer: "authentication" },
+          { id: "oauth", text: "OAuth 2.0", detail: "Delegare de acces limitat catre aplicatii.", answer: "authorization" },
+          { id: "rbac", text: "RBAC groups", detail: "Permisiuni acordate pe baza rolului.", answer: "authorization" },
+          { id: "least-priv", text: "Least privilege", detail: "Acces minim necesar pentru job.", answer: "authorization" },
+          { id: "radius-acct", text: "RADIUS UDP 1813", detail: "Accounting pentru AAA.", answer: "accounting" },
+          { id: "security-log", text: "Windows security logs", detail: "Inregistreaza evenimente de logon/logoff.", answer: "accounting" },
+          { id: "siem", text: "SIEM correlation", detail: "Coreleaza incercari si activitati din sisteme multiple.", answer: "accounting" }
+        ]
+      },
+      {
+        id: "network-zones",
+        mode: "categorize",
+        title: "Network Architecture si Hardening",
+        note: "Plaseaza controalele in zona unde sunt cele mai potrivite.",
+        scenario: "O companie proiecteaza o retea cu internet, screened subnet, LAN intern, management securizat si acces wireless/mobile.",
+        categories: [
+          { id: "perimeter", title: "Perimeter / Screened Subnet", description: "Expune servicii publice si filtreaza traficul din internet." },
+          { id: "internal", title: "Internal LAN / Segmentation", description: "Reduce miscarea laterala si separa resursele interne." },
+          { id: "management", title: "Secure Management", description: "Administrare sigura a serverelor si echipamentelor." },
+          { id: "wireless-mobile", title: "Wireless / Mobile", description: "Controale pentru WAP, BYOD si dispozitive mobile." }
+        ],
+        items: [
+          { id: "waf", text: "WAF", detail: "Filtreaza atacuri HTTP/HTTPS catre web apps.", answer: "perimeter" },
+          { id: "reverse-proxy", text: "Reverse proxy", detail: "Sta in fata serverelor publice.", answer: "perimeter" },
+          { id: "dmz-mail", text: "Public web/mail server", detail: "Servicii accesibile din internet.", answer: "perimeter" },
+          { id: "edge-fw", text: "Firewall ACL allow/deny", detail: "Reguli de acces intre zone.", answer: "perimeter" },
+          { id: "vlan", text: "VLAN separation", detail: "Separare logica a retelelor interne.", answer: "internal" },
+          { id: "nac", text: "NAC compliance check", detail: "Permite acces doar dispozitivelor conforme.", answer: "internal" },
+          { id: "east-west", text: "Internal firewall rules", detail: "Controleaza traficul intre segmente interne.", answer: "internal" },
+          { id: "ssh", text: "SSH", detail: "Administrare remote securizata pentru networking/Linux.", answer: "management" },
+          { id: "bastion", text: "Bastion host / jump box", detail: "Punct controlat pentru acces administrativ.", answer: "management" },
+          { id: "vpn", text: "VPN concentrator", detail: "Tunel securizat pentru remote access.", answer: "management" },
+          { id: "wpa3", text: "WPA3 Enterprise / 802.1X", detail: "Autentificare si criptare enterprise Wi-Fi.", answer: "wireless-mobile" },
+          { id: "guest", text: "Guest Wi-Fi captive portal", detail: "Acces separat pentru vizitatori.", answer: "wireless-mobile" },
+          { id: "mdm", text: "MDM + remote wipe", detail: "Politici si stergere remote pentru mobile.", answer: "wireless-mobile" },
+          { id: "fde", text: "Full device encryption", detail: "Protejeaza datele de pe dispozitive pierdute.", answer: "wireless-mobile" }
+        ]
+      },
+      {
+        id: "attack-triage",
+        mode: "categorize",
+        title: "Attack Triage",
+        note: "Identifica familia atacului dupa indiciu.",
+        scenario: "Primul nivel SOC primeste alerte si descrieri scurte. Trebuie sa sorteze rapid incidentul ca sa aleaga raspunsul potrivit.",
+        categories: [
+          { id: "social", title: "Social Engineering", description: "Atacuri pe psihologia utilizatorului." },
+          { id: "password", title: "Password Attack", description: "Atacuri pe credentiale si mecanisme de autentificare." },
+          { id: "malware", title: "Malware", description: "Cod rau intentionat instalat sau executat pe sisteme." },
+          { id: "network-app", title: "Network / App Attack", description: "Atacuri pe disponibilitate, protocoale sau aplicatii." }
+        ],
+        items: [
+          { id: "whaling", text: "Email targetat catre CEO", detail: "Mesaj personalizat despre plata urgenta.", answer: "social" },
+          { id: "smishing", text: "SMS fals de la IT", detail: "Cere resetarea parolei prin link.", answer: "social" },
+          { id: "tailgating", text: "Tailgating", detail: "Atacatorul intra fizic dupa un angajat.", answer: "social" },
+          { id: "spraying", text: "Password spraying", detail: "O parola comuna testata pe multe conturi.", answer: "password" },
+          { id: "dictionary", text: "Dictionary attack", detail: "Liste de parole comune.", answer: "password" },
+          { id: "replay", text: "Replay attack", detail: "Date valide de autentificare retransmise ulterior.", answer: "password" },
+          { id: "ransomware", text: "Ransomware", detail: "Cripteaza fisiere si cere plata.", answer: "malware" },
+          { id: "keylogger", text: "Keylogger", detail: "Inregistreaza tastele utilizatorului.", answer: "malware" },
+          { id: "rat", text: "RAT / backdoor", detail: "Control remote si acces persistent ascuns.", answer: "malware" },
+          { id: "ddos", text: "DDoS botnet", detail: "Multe sisteme trimit trafic pentru indisponibilitate.", answer: "network-app" },
+          { id: "dns-amp", text: "DNS amplification", detail: "Trafic amplificat catre victima.", answer: "network-app" },
+          { id: "sqli", text: "SQL injection", detail: "Input manipulat pentru interogari SQL.", answer: "network-app" },
+          { id: "xss", text: "XSS", detail: "Script injectat in pagini web.", answer: "network-app" }
+        ]
+      },
+      {
+        id: "secure-protocols",
+        mode: "categorize",
+        title: "Secure Protocol Selection",
+        note: "Alege protocolul potrivit pentru cerinta data si evita variantele legacy nesecurizate.",
+        scenario: "Un administrator securizeaza comunicatiile pentru web, email, directory services, management remote si AAA. Trebuie sa sorteze rapid protocoalele dupa rol.",
+        categories: [
+          { id: "secure-web-email", title: "Secure Web / Email", description: "Protocoale folosite pentru web si email criptat." },
+          { id: "directory-aaa", title: "Directory / AAA", description: "Autentificare, directory services si accounting." },
+          { id: "admin-transfer", title: "Admin / File Transfer", description: "Administrare sau transfer de fisiere securizat." },
+          { id: "legacy-avoid", title: "Legacy / Avoid", description: "Protocoale necriptate sau mai slabe care trebuie inlocuite." }
+        ],
+        items: [
+          { id: "https443", text: "HTTPS 443", detail: "HTTP peste TLS pentru web securizat.", answer: "secure-web-email" },
+          { id: "imaps993", text: "IMAPS 993", detail: "Acces email IMAP criptat.", answer: "secure-web-email" },
+          { id: "pop3s995", text: "POP3S 995", detail: "Preluare email prin canal criptat.", answer: "secure-web-email" },
+          { id: "smtps587", text: "SMTP submission 587/TLS", detail: "Trimitere email cu TLS.", answer: "secure-web-email" },
+          { id: "kerb88", text: "Kerberos 88", detail: "Autentificare cu tichete in directory services.", answer: "directory-aaa" },
+          { id: "ldaps636", text: "LDAPS 636", detail: "LDAP securizat cu SSL/TLS.", answer: "directory-aaa" },
+          { id: "radius1812", text: "RADIUS 1812/1813", detail: "AAA pentru VPN/RAS si accounting.", answer: "directory-aaa" },
+          { id: "tacacs49", text: "TACACS+ TCP 49", detail: "AAA folosit frecvent pe echipamente Cisco.", answer: "directory-aaa" },
+          { id: "ssh22", text: "SSH 22", detail: "Administrare remote securizata.", answer: "admin-transfer" },
+          { id: "sftp22", text: "SFTP 22", detail: "Transfer de fisiere prin SSH.", answer: "admin-transfer" },
+          { id: "rdp3389", text: "RDP 3389", detail: "Remote desktop pentru Windows.", answer: "admin-transfer" },
+          { id: "snmpv3", text: "SNMPv3", detail: "Management de retea cu autentificare si criptare.", answer: "admin-transfer" },
+          { id: "telnet23", text: "Telnet 23", detail: "Remote shell necriptat.", answer: "legacy-avoid" },
+          { id: "ftp21", text: "FTP 20/21", detail: "Transfer fisiere fara criptare nativa.", answer: "legacy-avoid" },
+          { id: "http80", text: "HTTP 80", detail: "Web fara TLS.", answer: "legacy-avoid" },
+          { id: "ldap389", text: "LDAP 389", detail: "Directory service fara criptare implicita.", answer: "legacy-avoid" }
+        ]
+      },
+      {
+        id: "wireless-mobile",
+        mode: "categorize",
+        title: "Wireless si Mobile Security",
+        note: "Sorteaza controalele si atacurile dupa zona corecta: Wi-Fi, atac wireless, mobile management sau mobile data protection.",
+        scenario: "Compania are WAP-uri, guest Wi-Fi, BYOD si telefoane pierdute ocazional. Echipa trebuie sa intareasca wireless-ul si dispozitivele mobile.",
+        categories: [
+          { id: "wifi-hardening", title: "Wi-Fi Hardening", description: "Controale care intaresc accesul wireless." },
+          { id: "wireless-attack", title: "Wireless Attack", description: "Atacuri specifice retelelor wireless." },
+          { id: "mobile-mgmt", title: "Mobile Management", description: "Politici si administrare pentru dispozitive mobile." },
+          { id: "mobile-data", title: "Mobile Data Protection", description: "Protectie pentru datele locale de pe dispozitiv." }
+        ],
+        items: [
+          { id: "wpa3-ent", text: "WPA3 Enterprise", detail: "Enterprise Wi-Fi cu autentificare puternica.", answer: "wifi-hardening" },
+          { id: "8021x", text: "802.1X / certificate auth", detail: "Port-based authentication pentru wireless/switch.", answer: "wifi-hardening" },
+          { id: "guest-portal", text: "Captive portal pentru guest", detail: "Separare si control pentru vizitatori.", answer: "wifi-hardening" },
+          { id: "change-default", text: "Schimba default admin password", detail: "Prim pas la configurarea WAP.", answer: "wifi-hardening" },
+          { id: "deauth", text: "Wireless disassociation", detail: "De-auth frames pentru DoS wireless.", answer: "wireless-attack" },
+          { id: "rogue-ap", text: "Rogue access point", detail: "AP neautorizat in retea.", answer: "wireless-attack" },
+          { id: "evil-twin", text: "Evil twin", detail: "AP fals care imita reteaua legitima.", answer: "wireless-attack" },
+          { id: "iv-attack", text: "IV/key capture attack", detail: "Atac pe chei/initialization vectors la wireless slab.", answer: "wireless-attack" },
+          { id: "mdm-policy", text: "MDM policy", detail: "Seteaza parole, camere, aplicatii si compliance.", answer: "mobile-mgmt" },
+          { id: "remote-wipe", text: "Remote wipe", detail: "Stergere la distanta pentru dispozitive pierdute.", answer: "mobile-mgmt" },
+          { id: "geofence", text: "Geofencing", detail: "Acces permis doar din locatie aprobata.", answer: "mobile-mgmt" },
+          { id: "context-auth", text: "Context-aware authentication", detail: "Verifica utilizator, locatie, timp si dispozitiv.", answer: "mobile-mgmt" },
+          { id: "fde-mobile", text: "Full device encryption", detail: "Protejeaza datele daca device-ul este pierdut.", answer: "mobile-data" },
+          { id: "container", text: "Containerization", detail: "Spatiu separat pentru date corporate.", answer: "mobile-data" },
+          { id: "tpm", text: "TPM stores encryption keys", detail: "Cheile pentru criptarea discului sunt protejate hardware.", answer: "mobile-data" },
+          { id: "lockout", text: "Screen lock + failed attempt limit", detail: "Reduce accesul fizic neautorizat.", answer: "mobile-data" }
+        ]
+      },
+      {
+        id: "certificate-types",
+        mode: "categorize",
+        title: "Certificate Types si Trust",
+        note: "Potriveste tipul de certificat sau conceptul PKI cu folosirea corecta.",
+        scenario: "O organizatie cumpara certificate pentru website-uri publice, aplicatii interne, semnare software si comunicare cu parteneri. Trebuie alese tipurile corecte.",
+        categories: [
+          { id: "website-cert", title: "Website Identity", description: "Certificate folosite pentru site-uri si domenii." },
+          { id: "device-user", title: "Device / User Identity", description: "Certificate pentru autentificarea masinilor sau utilizatorilor." },
+          { id: "software-trust", title: "Software / Email Trust", description: "Semnare si incredere pentru cod sau mesaje." },
+          { id: "trust-model", title: "Trust Model", description: "Modele de incredere si relatii intre CA-uri." }
+        ],
+        items: [
+          { id: "dv", text: "Domain Validated certificate", detail: "Confirma controlul asupra domeniului.", answer: "website-cert" },
+          { id: "ev", text: "Extended Validation certificate", detail: "Nivel mai ridicat de verificare a entitatii.", answer: "website-cert" },
+          { id: "wildcard", text: "Wildcard certificate", detail: "Acopera subdomenii precum *.example.com.", answer: "website-cert" },
+          { id: "san", text: "SAN certificate", detail: "Acopera mai multe nume/domenii/IP-uri.", answer: "website-cert" },
+          { id: "machine-cert", text: "Machine certificate", detail: "Identifica un computer sau server.", answer: "device-user" },
+          { id: "user-cert", text: "User certificate", detail: "Autentifica un utilizator pentru aplicatii.", answer: "device-user" },
+          { id: "smart-card", text: "Smart card / CAC / PIV", detail: "Certificat pe card/chip pentru identitate.", answer: "device-user" },
+          { id: "ssh-keys-cert", text: "SSH key pair", detail: "Cheie publica pe server, privata la administrator.", answer: "device-user" },
+          { id: "code-signing", text: "Code-signing certificate", detail: "Dovedeste integritatea si originea software-ului.", answer: "software-trust" },
+          { id: "email-sign", text: "Email signing certificate", detail: "Semnare pentru autenticitate si integritate email.", answer: "software-trust" },
+          { id: "self-signed", text: "Self-signed certificate", detail: "Util in lab/intern, dar nu este trusted public.", answer: "software-trust" },
+          { id: "root-ca", text: "Root CA / trust anchor", detail: "Punctul de incredere din care deriva chain-ul.", answer: "trust-model" },
+          { id: "intermediate-ca", text: "Intermediate CA", detail: "CA subordonata care emite certificate.", answer: "trust-model" },
+          { id: "bridge-trust", text: "Bridge trust model", detail: "Doua PKI separate isi acorda incredere reciproc.", answer: "trust-model" },
+          { id: "cross-cert", text: "Cross-certification", detail: "Permite incredere intre organizatii diferite.", answer: "trust-model" }
+        ]
+      },
+      {
+        id: "access-control-models",
+        mode: "categorize",
+        title: "Access Control si Auth Factors",
+        note: "Sorteaza conceptele dupa modelul de access control, factor de autentificare sau risc biometric.",
+        scenario: "Echipa de securitate revizuieste permisiunile NTFS, rolurile utilizatorilor, autentificarea MFA si cititoarele biometrice.",
+        categories: [
+          { id: "access-model", title: "Access Control Model", description: "Modul in care sunt acordate permisiunile." },
+          { id: "auth-factor", title: "Authentication Factor", description: "Ce dovedeste identitatea utilizatorului." },
+          { id: "biometric-risk", title: "Biometric Metrics / Errors", description: "Erori si masuratori specifice biometriei." },
+          { id: "privileged-risk", title: "Privileged / Default Risk", description: "Conturi cu risc ridicat sau configurari periculoase." }
+        ],
+        items: [
+          { id: "dac", text: "DAC / NTFS permissions", detail: "Owner-ul poate controla accesul la obiect.", answer: "access-model" },
+          { id: "mac-model", text: "MAC model", detail: "Acces pe baza clasificarii si etichetelor.", answer: "access-model" },
+          { id: "rbac-model", text: "Role-Based Access Control", detail: "Acces acordat pe roluri/job functions.", answer: "access-model" },
+          { id: "abac-model", text: "Attribute-Based Access Control", detail: "Acces pe baza atributelor si contextului.", answer: "access-model" },
+          { id: "password-pin", text: "Password or PIN", detail: "Something you know.", answer: "auth-factor" },
+          { id: "smart-token", text: "Smart card / hardware token", detail: "Something you have.", answer: "auth-factor" },
+          { id: "fingerprint", text: "Fingerprint / iris", detail: "Something you are.", answer: "auth-factor" },
+          { id: "location", text: "Location-based authentication", detail: "Somewhere you are.", answer: "auth-factor" },
+          { id: "far", text: "FAR / Type II error", detail: "Unauthorized user is accepted.", answer: "biometric-risk" },
+          { id: "frr", text: "FRR / Type I error", detail: "Legitimate user is rejected.", answer: "biometric-risk" },
+          { id: "cer", text: "CER", detail: "Punctul unde FAR si FRR se intersecteaza.", answer: "biometric-risk" },
+          { id: "priv-acct", text: "Privileged account", detail: "Cont cu acces ridicat, trebuie controlat strict.", answer: "privileged-risk" },
+          { id: "guest-account", text: "Guest account", detail: "Cont legacy/temporar cu risc daca ramane activ.", answer: "privileged-risk" },
+          { id: "default-admin", text: "Default admin credentials", detail: "Trebuie redenumite/schimbate imediat.", answer: "privileged-risk" },
+          { id: "pam", text: "PAM", detail: "Gestioneaza si auditeaza accesul privilegiat.", answer: "privileged-risk" }
+        ]
+      },
+      {
+        id: "security-controls",
+        mode: "categorize",
+        title: "Security Controls si Resilience",
+        note: "Plaseaza controalele dupa scop: prevenire, detectie, corectie/recuperare sau guvernanta operationala.",
+        scenario: "Dupa un audit, compania trebuie sa explice ce tip de control este fiecare masura: ce opreste incidentul, ce il detecteaza, ce restaureaza serviciul si ce tine de proces.",
+        categories: [
+          { id: "preventive", title: "Preventive", description: "Incearca sa opreasca incidentul inainte sa se produca." },
+          { id: "detective", title: "Detective", description: "Identifica activitate suspecta sau incidente." },
+          { id: "corrective", title: "Corrective / Recovery", description: "Restaureaza functionarea si reduce impactul." },
+          { id: "operational", title: "Operational / Governance", description: "Procese, training, politici si coordonare." }
+        ],
+        items: [
+          { id: "firewall", text: "Firewall deny-by-default", detail: "Blocheaza traficul neautorizat.", answer: "preventive" },
+          { id: "least-priv-control", text: "Least privilege", detail: "Reduce ce poate face un cont compromis.", answer: "preventive" },
+          { id: "mfa-control", text: "MFA", detail: "Reduce riscul parolelor compromise.", answer: "preventive" },
+          { id: "hardening", text: "OS hardening", detail: "Inchide servicii si conturi inutile.", answer: "preventive" },
+          { id: "ids", text: "IDS alert", detail: "Detecteaza activitate suspecta.", answer: "detective" },
+          { id: "siem-alert", text: "SIEM correlation rule", detail: "Coreleaza evenimente din surse multiple.", answer: "detective" },
+          { id: "logging", text: "Active logging", detail: "Inregistreaza activitate pentru investigatii.", answer: "detective" },
+          { id: "vuln-scan", text: "Vulnerability scan", detail: "Gaseste slabiciuni inainte de exploatare.", answer: "detective" },
+          { id: "backup", text: "Backups", detail: "Recupereaza date dupa pierdere/ransomware.", answer: "corrective" },
+          { id: "restore", text: "System restore / reimage", detail: "Readuce sistemul la stare functionala.", answer: "corrective" },
+          { id: "drp", text: "Disaster Recovery Plan", detail: "Plan pentru restaurarea serviciilor critice.", answer: "corrective" },
+          { id: "rto-rpo", text: "RTO / RPO", detail: "Tinte pentru timp de recuperare si pierdere acceptata.", answer: "corrective" },
+          { id: "training", text: "Security awareness training", detail: "Reduce riscul de phishing si erori umane.", answer: "operational" },
+          { id: "irp", text: "Incident Response Plan", detail: "Defineste pasii si responsabilitatile in incident.", answer: "operational" },
+          { id: "policy", text: "Password / access policy", detail: "Reguli organizationale pentru utilizatori.", answer: "operational" },
+          { id: "lessons", text: "Lessons learned", detail: "Imbunatatiri dupa incident.", answer: "operational" }
+        ]
+      }
+    ];
+
+    const itemBank = document.getElementById("itemBank");
+    const tabs = document.getElementById("tabs");
+    const workArea = document.getElementById("workArea");
+    const taskTitle = document.getElementById("taskTitle");
+    const taskNote = document.getElementById("taskNote");
+    const scenarioText = document.getElementById("scenarioText");
+    const score = document.getElementById("score");
+    const feedback = document.getElementById("feedback");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const answersBtn = document.getElementById("answersBtn");
+
+    let activeTaskId = tasks[0].id;
+    let showAnswers = false;
+
+    function activeTask() {
+      return tasks.find((task) => task.id === activeTaskId);
+    }
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - 0.5);
+    }
+
+    function currentDragged() {
+      return document.querySelector(".item.dragging");
+    }
+
+    function makeItem(item, index = null) {
+      const node = document.createElement("div");
+      node.className = "item";
+      node.draggable = true;
+      node.dataset.itemId = item.id;
+      if (item.answer) node.dataset.answer = item.answer;
+      if (index !== null) node.dataset.order = String(index);
+      node.innerHTML = `${item.text}<small>${item.detail}</small>`;
+      node.addEventListener("dragstart", () => node.classList.add("dragging"));
+      node.addEventListener("dragend", () => {
+        node.classList.remove("dragging");
+        fillEmptySlots();
+      });
+      return node;
+    }
+
+    function makeEmptyText(text = "Trage itemii aici") {
+      const node = document.createElement("span");
+      node.className = "empty";
+      node.textContent = text;
+      return node;
+    }
+
+    function prepareDropZone(zone) {
+      zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("over");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("over");
+      });
+
+      zone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        zone.classList.remove("over");
+        const dragged = currentDragged();
+        if (!dragged) return;
+
+        const empty = zone.querySelector(".empty");
+        if (empty) empty.remove();
+
+        if (zone.classList.contains("sequence-zone")) {
+          const after = getSequenceInsertBefore(zone, event.clientY);
+          if (after) {
+            zone.insertBefore(dragged, after);
+          } else {
+            zone.appendChild(dragged);
+          }
+        } else {
+          zone.appendChild(dragged);
+        }
+
+        fillEmptySlots();
+        clearResults();
+      });
+    }
+
+    function getSequenceInsertBefore(container, y) {
+      const draggable = [...container.querySelectorAll(".item:not(.dragging)")];
+      return draggable.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function renderTabs() {
+      tabs.replaceChildren();
+      tasks.forEach((task) => {
+        const button = document.createElement("button");
+        button.className = `tab${task.id === activeTaskId ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = task.title;
+        button.addEventListener("click", () => {
+          activeTaskId = task.id;
+          showAnswers = false;
+          render();
+        });
+        tabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      const task = activeTask();
+      renderTabs();
+      itemBank.replaceChildren();
+      workArea.replaceChildren();
+      feedback.textContent = "";
+      taskTitle.textContent = task.title;
+      taskNote.textContent = task.note;
+      scenarioText.textContent = task.scenario;
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+      score.textContent = `Scor: 0 / ${task.mode === "sequence" ? task.sequence.length : task.items.length}`;
+
+      if (task.mode === "sequence") {
+        renderSequenceTask(task);
+      } else {
+        renderCategorizeTask(task);
+      }
+
+      prepareDropZone(itemBank);
+    }
+
+    function renderCategorizeTask(task) {
+      shuffle(task.items).forEach((item) => itemBank.appendChild(makeItem(item)));
+
+      const targets = document.createElement("div");
+      targets.className = "targets";
+      targets.classList.toggle("three", task.categories.length === 3);
+      targets.classList.toggle("four", task.categories.length === 4);
+
+      task.categories.forEach((category) => {
+        const target = document.createElement("article");
+        target.className = `target${showAnswers ? " show-answer" : ""}`;
+        target.dataset.targetId = category.id;
+
+        const title = document.createElement("h3");
+        title.textContent = category.title;
+        const description = document.createElement("p");
+        description.textContent = category.description;
+
+        const zone = document.createElement("div");
+        zone.className = "drop-zone";
+        zone.appendChild(makeEmptyText("Trage itemii potriviti aici"));
+
+        const expected = document.createElement("div");
+        expected.className = "expected";
+        expected.textContent = expectedTextForCategory(task, category.id);
+
+        target.append(title, description, zone, expected);
+        targets.appendChild(target);
+        prepareDropZone(zone);
+      });
+
+      workArea.appendChild(targets);
+    }
+
+    function renderSequenceTask(task) {
+      shuffle(task.sequence).forEach((item, shuffledIndex) => {
+        const correctIndex = task.sequence.findIndex((entry) => entry.id === item.id);
+        itemBank.appendChild(makeItem(item, correctIndex));
+      });
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "sequence-wrap";
+
+      const target = document.createElement("article");
+      target.className = `target sequence-target${showAnswers ? " show-answer" : ""}`;
+      target.dataset.targetId = "sequence";
+
+      const title = document.createElement("h3");
+      title.textContent = "Ordinea corecta a actiunilor";
+      const description = document.createElement("p");
+      description.textContent = "Trage toate actiunile aici si rearanjeaza-le in ordinea potrivita.";
+
+      const zone = document.createElement("div");
+      zone.className = "drop-zone sequence-zone";
+      zone.appendChild(makeEmptyText("Construieste ordinea de raspuns aici"));
+
+      const expected = document.createElement("div");
+      expected.className = "expected";
+      expected.innerHTML = sequenceExpectedText(task);
+
+      target.append(title, description, zone, expected);
+      wrapper.appendChild(target);
+      workArea.appendChild(wrapper);
+      prepareDropZone(zone);
+    }
+
+    function expectedTextForCategory(task, categoryId) {
+      const answers = task.items
+        .filter((item) => item.answer === categoryId)
+        .map((item) => item.text);
+      return answers.length ? `Raspuns corect: ${answers.join(", ")}` : "Raspuns corect: niciun item";
+    }
+
+    function sequenceExpectedText(task) {
+      return `Raspuns corect: ${task.sequence.map((item, index) => `${index + 1}. ${item.text}`).join(" | ")}`;
+    }
+
+    function fillEmptySlots() {
+      document.querySelectorAll(".bank, .drop-zone").forEach((zone) => {
+        if (!zone.querySelector(".item") && !zone.querySelector(".empty")) {
+          const text = zone.classList.contains("sequence-zone")
+            ? "Construieste ordinea de raspuns aici"
+            : "Trage itemii aici";
+          zone.appendChild(makeEmptyText(text));
+        }
+      });
+    }
+
+    function clearResults() {
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.remove("correct", "wrong");
+      });
+      document.querySelectorAll(".item").forEach((item) => {
+        item.classList.remove("good", "bad");
+      });
+      feedback.textContent = "";
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll(".drop-zone .item").forEach((item) => itemBank.appendChild(item));
+      fillEmptySlots();
+      clearResults();
+      const task = activeTask();
+      score.textContent = `Scor: 0 / ${task.mode === "sequence" ? task.sequence.length : task.items.length}`;
+    }
+
+    function checkAnswers() {
+      const task = activeTask();
+      if (task.mode === "sequence") {
+        checkSequence(task);
+      } else {
+        checkCategorize(task);
+      }
+    }
+
+    function checkCategorize(task) {
+      let correct = 0;
+
+      task.items.forEach((item) => {
+        const node = document.querySelector(`[data-item-id="${item.id}"]`);
+        const placedTarget = node.closest(".target")?.dataset.targetId;
+        const isCorrect = placedTarget === item.answer;
+        if (isCorrect) correct += 1;
+        node.classList.toggle("good", isCorrect);
+        node.classList.toggle("bad", Boolean(placedTarget && !isCorrect));
+      });
+
+      document.querySelectorAll(".target").forEach((target) => {
+        const placed = [...target.querySelectorAll(".item")];
+        const hasItems = placed.length > 0;
+        const allCorrect = placed.every((node) => node.dataset.answer === target.dataset.targetId);
+        target.classList.toggle("correct", hasItems && allCorrect);
+        target.classList.toggle("wrong", hasItems && !allCorrect);
+      });
+
+      score.textContent = `Scor: ${correct} / ${task.items.length}`;
+      feedback.textContent = correct === task.items.length
+        ? "Perfect. Toate itemii sunt plasati corect."
+        : `Ai ${correct} raspunsuri corecte din ${task.items.length}.`;
+    }
+
+    function checkSequence(task) {
+      let correct = 0;
+      const zone = document.querySelector(".sequence-zone");
+      const placed = [...zone.querySelectorAll(".item")];
+
+      placed.forEach((node, index) => {
+        const isCorrect = Number(node.dataset.order) === index;
+        if (isCorrect) correct += 1;
+        node.classList.toggle("good", isCorrect);
+        node.classList.toggle("bad", !isCorrect);
+      });
+
+      document.querySelectorAll("#itemBank .item").forEach((node) => {
+        node.classList.remove("good");
+        node.classList.add("bad");
+      });
+
+      const target = document.querySelector(".sequence-target");
+      target.classList.toggle("correct", correct === task.sequence.length);
+      target.classList.toggle("wrong", correct !== task.sequence.length && placed.length > 0);
+
+      score.textContent = `Scor: ${correct} / ${task.sequence.length}`;
+      feedback.textContent = correct === task.sequence.length
+        ? "Perfect. Ordinea este corecta."
+        : `Ai ${correct} pozitii corecte din ${task.sequence.length}.`;
+    }
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetAnswers);
+    shuffleBtn.addEventListener("click", render);
+    answersBtn.addEventListener("click", () => {
+      showAnswers = !showAnswers;
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.toggle("show-answer", showAnswers);
+      });
+      answersBtn.textContent = showAnswers ? "Ascunde raspunsurile" : "Arata raspunsurile";
+    });
+
+    render();
+  </script>
+</body>
+</html>
