@@ -1,0 +1,1450 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PBQ - Incident Response & Digital Forensics Lab</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f6fa;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #627089;
+      --line: #d6dee9;
+      --accent: #155eef;
+      --accent-soft: #eaf1ff;
+      --good: #16834d;
+      --bad: #bd3f35;
+      --shadow: 0 14px 34px rgba(23, 32, 51, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 26px 0 38px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 30px;
+      line-height: 1.15;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score {
+      min-width: 170px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.7fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .tab.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: #0b3b95;
+    }
+
+    .scenario {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .scenario strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: #2b3648;
+    }
+
+    .task-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .task-note {
+      max-width: 370px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+    }
+
+    .bank,
+    .drop-zone {
+      display: grid;
+      gap: 9px;
+      align-content: start;
+    }
+
+    .bank {
+      min-height: 240px;
+      border: 1px dashed transparent;
+      border-radius: 8px;
+    }
+
+    .bank.over,
+    .drop-zone.over {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 11px 12px;
+      cursor: grab;
+      user-select: none;
+      font-weight: 900;
+      line-height: 1.25;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+    }
+
+    .item:active { cursor: grabbing; }
+
+    .item.dragging {
+      opacity: 0.55;
+      transform: scale(0.98);
+    }
+
+    .item.good {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .item.bad {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .targets {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .targets.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .targets.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .targets.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+    .target {
+      min-height: 230px;
+      border: 2px dashed var(--line);
+      border-radius: 8px;
+      background: #fbfcff;
+      padding: 12px;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+
+    .target.correct {
+      border-color: var(--good);
+      background: #edf8f2;
+    }
+
+    .target.wrong {
+      border-color: var(--bad);
+      background: #fff0ef;
+    }
+
+    .target h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .drop-zone {
+      min-height: 150px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .sequence-target {
+      min-height: 470px;
+    }
+
+    .sequence-zone {
+      min-height: 350px;
+      counter-reset: order;
+    }
+
+    .sequence-zone .item {
+      position: relative;
+      padding-left: 46px;
+    }
+
+    .sequence-zone .item::before {
+      counter-increment: order;
+      content: counter(order);
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      width: 25px;
+      height: 25px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: #0b3b95;
+      transform: translateY(-50%);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .empty {
+      align-self: center;
+      color: #8793a8;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 12px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 1180px) {
+      .targets.five { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 1080px) {
+      .targets.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .layout,
+      .task-head {
+        grid-template-columns: 1fr;
+      }
+
+      .score,
+      .task-note {
+        text-align: left;
+      }
+
+      .targets,
+      .targets.three,
+      .targets.four,
+      .targets.five {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>PBQ: Incident Response & Digital Forensics Lab</h1>
+        <p>Ten English exercises based on Incident Response, attack frameworks and Digital Forensics.</p>
+      </div>
+      <div class="score" id="score">Score: 0 / 0</div>
+    </header>
+
+    <section class="layout" aria-label="Incident response and digital forensics exercises">
+      <aside class="panel">
+        <h2>Items</h2>
+        <div class="bank" id="itemBank"></div>
+      </aside>
+
+      <section class="panel">
+        <nav class="tabs" id="tabs" aria-label="Exercises"></nav>
+        <div class="task-head">
+          <h2 id="taskTitle">Exercise</h2>
+          <div class="task-note" id="taskNote"></div>
+        </div>
+        <div class="scenario">
+          <strong>Scenario</strong>
+          <p id="scenarioText"></p>
+        </div>
+        <div id="workArea"></div>
+        <div class="actions">
+          <button class="primary" id="checkBtn" type="button">Check</button>
+          <button class="secondary" id="resetBtn" type="button">Reset</button>
+          <button class="secondary" id="shuffleBtn" type="button">Shuffle</button>
+        </div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const tasks = [
+      {
+            "id": "ir-process",
+            "mode": "sequence",
+            "title": "Incident Response Process",
+            "scenario": "A security team must run a formal incident response process from readiness to improvement.",
+            "sequence": [
+                  {
+                        "id": "prep",
+                        "text": "Preparation"
+                  },
+                  {
+                        "id": "identify",
+                        "text": "Identification"
+                  },
+                  {
+                        "id": "contain",
+                        "text": "Containment"
+                  },
+                  {
+                        "id": "eradicate",
+                        "text": "Eradication"
+                  },
+                  {
+                        "id": "recover",
+                        "text": "Recovery"
+                  },
+                  {
+                        "id": "lessons",
+                        "text": "Lessons Learned"
+                  }
+            ]
+      },
+      {
+            "id": "dr-exercises",
+            "mode": "categorize",
+            "title": "Disaster Exercise Types",
+            "scenario": "The organization tests readiness with different exercise formats.",
+            "categories": [
+                  {
+                        "id": "tabletop",
+                        "title": "Tabletop"
+                  },
+                  {
+                        "id": "walkthrough",
+                        "title": "Structured Walk-Through"
+                  },
+                  {
+                        "id": "simulation",
+                        "title": "Simulation"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "paper-scenario",
+                        "text": "Paper scenario discussion",
+                        "answer": "tabletop"
+                  },
+                  {
+                        "id": "leaders-discuss",
+                        "text": "Leaders discuss decisions",
+                        "answer": "tabletop"
+                  },
+                  {
+                        "id": "no-live-systems",
+                        "text": "No live systems touched",
+                        "answer": "tabletop"
+                  },
+                  {
+                        "id": "mock-disaster",
+                        "text": "Mock disaster enacted physically",
+                        "answer": "walkthrough"
+                  },
+                  {
+                        "id": "fire-drill",
+                        "text": "Fire drill",
+                        "answer": "walkthrough"
+                  },
+                  {
+                        "id": "teams-mobilized",
+                        "text": "Response teams physically mobilized",
+                        "answer": "walkthrough"
+                  },
+                  {
+                        "id": "red-blue",
+                        "text": "Red team and blue team",
+                        "answer": "simulation"
+                  },
+                  {
+                        "id": "white-team",
+                        "text": "White team measures responses",
+                        "answer": "simulation"
+                  },
+                  {
+                        "id": "scenario-driven",
+                        "text": "Scenario-driven operational event",
+                        "answer": "simulation"
+                  }
+            ]
+      },
+      {
+            "id": "framework-selector",
+            "mode": "categorize",
+            "title": "Attack Framework Selector",
+            "scenario": "A threat-hunting team chooses the best framework lens for each analysis artifact.",
+            "categories": [
+                  {
+                        "id": "mitre",
+                        "title": "MITRE ATT&CK"
+                  },
+                  {
+                        "id": "kill-chain",
+                        "title": "Cyber Kill Chain"
+                  },
+                  {
+                        "id": "diamond",
+                        "title": "Diamond Model"
+                  },
+                  {
+                        "id": "bcp-drp",
+                        "title": "BCP / DRP"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "adversarial",
+                        "text": "Adversarial",
+                        "answer": "mitre"
+                  },
+                  {
+                        "id": "tactics",
+                        "text": "Tactics",
+                        "answer": "mitre"
+                  },
+                  {
+                        "id": "techniques",
+                        "text": "Techniques",
+                        "answer": "mitre"
+                  },
+                  {
+                        "id": "common-knowledge",
+                        "text": "Common Knowledge",
+                        "answer": "mitre"
+                  },
+                  {
+                        "id": "recon-phase",
+                        "text": "Reconnaissance phase",
+                        "answer": "kill-chain"
+                  },
+                  {
+                        "id": "early-disruption",
+                        "text": "Early attack disruption",
+                        "answer": "kill-chain"
+                  },
+                  {
+                        "id": "enemy-steps",
+                        "text": "Enemy attack steps",
+                        "answer": "kill-chain"
+                  },
+                  {
+                        "id": "adversary-capability",
+                        "text": "Adversary-capability relationship",
+                        "answer": "diamond"
+                  },
+                  {
+                        "id": "infra-victim",
+                        "text": "Infrastructure-victim relationship",
+                        "answer": "diamond"
+                  },
+                  {
+                        "id": "intrusion-intel",
+                        "text": "Intrusion intelligence model",
+                        "answer": "diamond"
+                  },
+                  {
+                        "id": "bia",
+                        "text": "Business Impact Analysis",
+                        "answer": "bcp-drp"
+                  },
+                  {
+                        "id": "rpo",
+                        "text": "Recovery Point Objective",
+                        "answer": "bcp-drp"
+                  },
+                  {
+                        "id": "vendor-diversity",
+                        "text": "Vendor diversity",
+                        "answer": "bcp-drp"
+                  }
+            ]
+      },
+      {
+            "id": "diamond-board",
+            "mode": "categorize",
+            "title": "Diamond Model Board",
+            "scenario": "An intrusion analyst builds a Diamond Model board from case notes.",
+            "categories": [
+                  {
+                        "id": "adversary",
+                        "title": "Adversary"
+                  },
+                  {
+                        "id": "capability",
+                        "title": "Capabilities"
+                  },
+                  {
+                        "id": "infrastructure",
+                        "title": "Infrastructure"
+                  },
+                  {
+                        "id": "victim",
+                        "title": "Victim"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "apt28",
+                        "text": "APT28",
+                        "answer": "adversary"
+                  },
+                  {
+                        "id": "threat-group",
+                        "text": "Threat actor group",
+                        "answer": "adversary"
+                  },
+                  {
+                        "id": "operator",
+                        "text": "Operator identity",
+                        "answer": "adversary"
+                  },
+                  {
+                        "id": "exploit",
+                        "text": "Exploit",
+                        "answer": "capability"
+                  },
+                  {
+                        "id": "malware-kit",
+                        "text": "Malware toolkit",
+                        "answer": "capability"
+                  },
+                  {
+                        "id": "credential-theft",
+                        "text": "Credential theft method",
+                        "answer": "capability"
+                  },
+                  {
+                        "id": "c2",
+                        "text": "C2 IP address",
+                        "answer": "infrastructure"
+                  },
+                  {
+                        "id": "phishing-domain",
+                        "text": "Phishing domain",
+                        "answer": "infrastructure"
+                  },
+                  {
+                        "id": "remote-access-path",
+                        "text": "Remote access path",
+                        "answer": "infrastructure"
+                  },
+                  {
+                        "id": "employee",
+                        "text": "Target employee",
+                        "answer": "victim"
+                  },
+                  {
+                        "id": "department",
+                        "text": "Finance department",
+                        "answer": "victim"
+                  },
+                  {
+                        "id": "web-server",
+                        "text": "Public web server",
+                        "answer": "victim"
+                  }
+            ]
+      },
+      {
+            "id": "ir-team",
+            "mode": "categorize",
+            "title": "Incident Response Team Dispatch",
+            "scenario": "A major incident requires the right people in the right response lanes.",
+            "categories": [
+                  {
+                        "id": "technical",
+                        "title": "Technical"
+                  },
+                  {
+                        "id": "governance",
+                        "title": "Governance / Risk"
+                  },
+                  {
+                        "id": "people-legal",
+                        "title": "People / Legal"
+                  },
+                  {
+                        "id": "communications",
+                        "title": "Communications"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "sec-analyst",
+                        "text": "Security Analyst",
+                        "answer": "technical"
+                  },
+                  {
+                        "id": "cirt",
+                        "text": "Cyber Incident Response Team",
+                        "answer": "technical"
+                  },
+                  {
+                        "id": "third-party-specialist",
+                        "text": "Third-party cybercrime specialist",
+                        "answer": "technical"
+                  },
+                  {
+                        "id": "manager",
+                        "text": "Incident Response Manager",
+                        "answer": "governance"
+                  },
+                  {
+                        "id": "it-auditor",
+                        "text": "IT Auditor",
+                        "answer": "governance"
+                  },
+                  {
+                        "id": "risk-analyst",
+                        "text": "Risk Analyst",
+                        "answer": "governance"
+                  },
+                  {
+                        "id": "hr",
+                        "text": "HR",
+                        "answer": "people-legal"
+                  },
+                  {
+                        "id": "legal",
+                        "text": "Legal",
+                        "answer": "people-legal"
+                  },
+                  {
+                        "id": "employee-case",
+                        "text": "Employee involvement case",
+                        "answer": "people-legal"
+                  },
+                  {
+                        "id": "pr",
+                        "text": "Public Relations",
+                        "answer": "communications"
+                  },
+                  {
+                        "id": "press",
+                        "text": "Press statement",
+                        "answer": "communications"
+                  },
+                  {
+                        "id": "reputation",
+                        "text": "Reputation impact control",
+                        "answer": "communications"
+                  }
+            ]
+      },
+      {
+            "id": "siem-dashboard",
+            "mode": "categorize",
+            "title": "SIEM Dashboard Builder",
+            "scenario": "A SOC tunes a SIEM dashboard for visibility, compliance and alerting.",
+            "categories": [
+                  {
+                        "id": "sensors",
+                        "title": "Sensors"
+                  },
+                  {
+                        "id": "sensitivity",
+                        "title": "Sensitivity"
+                  },
+                  {
+                        "id": "trends",
+                        "title": "Trends"
+                  },
+                  {
+                        "id": "alerts",
+                        "title": "Alerts"
+                  },
+                  {
+                        "id": "correlation",
+                        "title": "Correlation"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "agents",
+                        "text": "Agents",
+                        "answer": "sensors"
+                  },
+                  {
+                        "id": "network-collectors",
+                        "text": "Network collectors",
+                        "answer": "sensors"
+                  },
+                  {
+                        "id": "log-change-input",
+                        "text": "Log change input",
+                        "answer": "sensors"
+                  },
+                  {
+                        "id": "pii",
+                        "text": "PII monitoring",
+                        "answer": "sensitivity"
+                  },
+                  {
+                        "id": "hipaa",
+                        "text": "HIPAA view",
+                        "answer": "sensitivity"
+                  },
+                  {
+                        "id": "gdpr-register",
+                        "text": "Personal Data Breach Register",
+                        "answer": "sensitivity"
+                  },
+                  {
+                        "id": "hardware-trend",
+                        "text": "Hardware breakdown trend",
+                        "answer": "trends"
+                  },
+                  {
+                        "id": "performance-trend",
+                        "text": "Performance trend",
+                        "answer": "trends"
+                  },
+                  {
+                        "id": "maintenance-forecast",
+                        "text": "Maintenance forecast",
+                        "answer": "trends"
+                  },
+                  {
+                        "id": "threshold",
+                        "text": "Threshold notification",
+                        "answer": "alerts"
+                  },
+                  {
+                        "id": "real-time",
+                        "text": "Real-time notification",
+                        "answer": "alerts"
+                  },
+                  {
+                        "id": "triggered-event",
+                        "text": "Triggered event",
+                        "answer": "alerts"
+                  },
+                  {
+                        "id": "aggregate",
+                        "text": "Aggregate logs",
+                        "answer": "correlation"
+                  },
+                  {
+                        "id": "single-report",
+                        "text": "Single incident picture",
+                        "answer": "correlation"
+                  },
+                  {
+                        "id": "multi-source",
+                        "text": "Multiple source matching",
+                        "answer": "correlation"
+                  }
+            ]
+      },
+      {
+            "id": "log-source-lab",
+            "mode": "categorize",
+            "title": "Log Source Lab",
+            "scenario": "An investigator selects the best log source for each artifact type.",
+            "categories": [
+                  {
+                        "id": "network",
+                        "title": "Network"
+                  },
+                  {
+                        "id": "host",
+                        "title": "Host / System"
+                  },
+                  {
+                        "id": "identity",
+                        "title": "Identity"
+                  },
+                  {
+                        "id": "app-web",
+                        "title": "Application / Web"
+                  },
+                  {
+                        "id": "voice-dns",
+                        "title": "Voice / DNS"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "ip-mac",
+                        "text": "IP and MAC address",
+                        "answer": "network"
+                  },
+                  {
+                        "id": "nids",
+                        "text": "NIDS/NIPS event",
+                        "answer": "network"
+                  },
+                  {
+                        "id": "proxy-user",
+                        "text": "Proxy user trail",
+                        "answer": "network"
+                  },
+                  {
+                        "id": "hardware-change",
+                        "text": "Hardware change",
+                        "answer": "host"
+                  },
+                  {
+                        "id": "gpo",
+                        "text": "Group Policy event",
+                        "answer": "host"
+                  },
+                  {
+                        "id": "dump",
+                        "text": "Dump file",
+                        "answer": "host"
+                  },
+                  {
+                        "id": "login-success",
+                        "text": "Successful login",
+                        "answer": "identity"
+                  },
+                  {
+                        "id": "unauth-attempt",
+                        "text": "Unauthorized attempt",
+                        "answer": "identity"
+                  },
+                  {
+                        "id": "radius-log",
+                        "text": "RADIUS login record",
+                        "answer": "identity"
+                  },
+                  {
+                        "id": "http-method",
+                        "text": "HTTP method",
+                        "answer": "app-web"
+                  },
+                  {
+                        "id": "browser-used",
+                        "text": "Browser used",
+                        "answer": "app-web"
+                  },
+                  {
+                        "id": "app-warning",
+                        "text": "Application warning",
+                        "answer": "app-web"
+                  },
+                  {
+                        "id": "zone-transfer",
+                        "text": "Zone transfer",
+                        "answer": "voice-dns"
+                  },
+                  {
+                        "id": "name-query",
+                        "text": "Name resolution query",
+                        "answer": "voice-dns"
+                  },
+                  {
+                        "id": "mos-jitter",
+                        "text": "MOS, jitter, loss",
+                        "answer": "voice-dns"
+                  }
+            ]
+      },
+      {
+            "id": "http-status",
+            "mode": "categorize",
+            "title": "HTTP Status Decoder",
+            "scenario": "A web log review requires fast sorting of HTTP status classes.",
+            "categories": [
+                  {
+                        "id": "1xx",
+                        "title": "100 Series"
+                  },
+                  {
+                        "id": "2xx",
+                        "title": "200 Series"
+                  },
+                  {
+                        "id": "3xx",
+                        "title": "300 Series"
+                  },
+                  {
+                        "id": "4xx",
+                        "title": "400 Series"
+                  },
+                  {
+                        "id": "5xx",
+                        "title": "500 Series"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "100",
+                        "text": "100 Continue",
+                        "answer": "1xx"
+                  },
+                  {
+                        "id": "102",
+                        "text": "102 Processing",
+                        "answer": "1xx"
+                  },
+                  {
+                        "id": "200",
+                        "text": "200 OK",
+                        "answer": "2xx"
+                  },
+                  {
+                        "id": "201",
+                        "text": "201 Created",
+                        "answer": "2xx"
+                  },
+                  {
+                        "id": "301",
+                        "text": "301 Moved Permanently",
+                        "answer": "3xx"
+                  },
+                  {
+                        "id": "302",
+                        "text": "302 Found",
+                        "answer": "3xx"
+                  },
+                  {
+                        "id": "403",
+                        "text": "403 Forbidden",
+                        "answer": "4xx"
+                  },
+                  {
+                        "id": "404",
+                        "text": "404 Not Found",
+                        "answer": "4xx"
+                  },
+                  {
+                        "id": "500",
+                        "text": "500 Internal Server Error",
+                        "answer": "5xx"
+                  },
+                  {
+                        "id": "502",
+                        "text": "502 Bad Gateway",
+                        "answer": "5xx"
+                  },
+                  {
+                        "id": "503",
+                        "text": "503 Service Unavailable",
+                        "answer": "5xx"
+                  }
+            ]
+      },
+      {
+            "id": "evidence-timeline",
+            "mode": "sequence",
+            "title": "Evidence Handling Timeline",
+            "scenario": "A forensic examiner must preserve evidence for investigation and later reporting.",
+            "sequence": [
+                  {
+                        "id": "legal-hold",
+                        "text": "Legal hold"
+                  },
+                  {
+                        "id": "volatile",
+                        "text": "Collect volatile evidence"
+                  },
+                  {
+                        "id": "bag-tag",
+                        "text": "Bag, tag and log"
+                  },
+                  {
+                        "id": "write-blocker",
+                        "text": "Use write blocker"
+                  },
+                  {
+                        "id": "forensic-copy",
+                        "text": "Create forensic copy"
+                  },
+                  {
+                        "id": "hash-start",
+                        "text": "Hash before analysis"
+                  },
+                  {
+                        "id": "analyze-copy",
+                        "text": "Analyze the copy"
+                  },
+                  {
+                        "id": "hash-end",
+                        "text": "Re-hash after analysis"
+                  },
+                  {
+                        "id": "report",
+                        "text": "Report findings"
+                  }
+            ]
+      },
+      {
+            "id": "cloud-forensics",
+            "mode": "categorize",
+            "title": "Cloud Forensics Board",
+            "scenario": "A cloud incident requires evidence handling across service, provider and legal boundaries.",
+            "categories": [
+                  {
+                        "id": "process",
+                        "title": "Process Stage"
+                  },
+                  {
+                        "id": "provider",
+                        "title": "Provider Dependency"
+                  },
+                  {
+                        "id": "jurisdiction",
+                        "title": "Jurisdiction / Legal"
+                  },
+                  {
+                        "id": "integrity",
+                        "title": "Evidence Integrity"
+                  }
+            ],
+            "items": [
+                  {
+                        "id": "purpose",
+                        "text": "Verify purpose",
+                        "answer": "process"
+                  },
+                  {
+                        "id": "service-type",
+                        "text": "Verify service type",
+                        "answer": "process"
+                  },
+                  {
+                        "id": "tech-type",
+                        "text": "Verify technology type",
+                        "answer": "process"
+                  },
+                  {
+                        "id": "user-role",
+                        "text": "Verify user role",
+                        "answer": "process"
+                  },
+                  {
+                        "id": "csp",
+                        "text": "Cloud Service Provider",
+                        "answer": "provider"
+                  },
+                  {
+                        "id": "provider-logs",
+                        "text": "Provider-supplied logs",
+                        "answer": "provider"
+                  },
+                  {
+                        "id": "ephemeral-vm",
+                        "text": "Ephemeral virtual machines",
+                        "answer": "provider"
+                  },
+                  {
+                        "id": "data-region",
+                        "text": "Data region",
+                        "answer": "jurisdiction"
+                  },
+                  {
+                        "id": "cloud-act",
+                        "text": "CLOUD Act",
+                        "answer": "jurisdiction"
+                  },
+                  {
+                        "id": "cross-border",
+                        "text": "Cross-border evidence",
+                        "answer": "jurisdiction"
+                  },
+                  {
+                        "id": "hash-values",
+                        "text": "Hash values",
+                        "answer": "integrity"
+                  },
+                  {
+                        "id": "worm",
+                        "text": "WORM storage",
+                        "answer": "integrity"
+                  },
+                  {
+                        "id": "chain-custody",
+                        "text": "Chain of custody",
+                        "answer": "integrity"
+                  }
+            ]
+      }
+];
+
+    const itemBank = document.getElementById("itemBank");
+    const tabs = document.getElementById("tabs");
+    const workArea = document.getElementById("workArea");
+    const taskTitle = document.getElementById("taskTitle");
+    const taskNote = document.getElementById("taskNote");
+    const scenarioText = document.getElementById("scenarioText");
+    const score = document.getElementById("score");
+    const feedback = document.getElementById("feedback");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+
+    let activeTaskId = tasks[0].id;
+
+    function activeTask() {
+      return tasks.find((task) => task.id === activeTaskId);
+    }
+
+    function shuffle(items) {
+      return [...items].sort(() => Math.random() - 0.5);
+    }
+
+    function currentDragged() {
+      return document.querySelector(".item.dragging");
+    }
+
+    function makeItem(item, index = null) {
+      const node = document.createElement("div");
+      node.className = "item";
+      node.draggable = true;
+      node.dataset.itemId = item.id;
+      if (item.answer) node.dataset.answer = item.answer;
+      if (index !== null) node.dataset.order = String(index);
+      node.textContent = item.text;
+      node.addEventListener("dragstart", () => node.classList.add("dragging"));
+      node.addEventListener("dragend", () => {
+        node.classList.remove("dragging");
+        fillEmptySlots();
+      });
+      return node;
+    }
+
+    function makeEmptyText(text = "Drop items here") {
+      const node = document.createElement("span");
+      node.className = "empty";
+      node.textContent = text;
+      return node;
+    }
+
+    function prepareDropZone(zone) {
+      zone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        zone.classList.add("over");
+      });
+
+      zone.addEventListener("dragleave", () => {
+        zone.classList.remove("over");
+      });
+
+      zone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        zone.classList.remove("over");
+        const dragged = currentDragged();
+        if (!dragged) return;
+
+        const empty = zone.querySelector(".empty");
+        if (empty) empty.remove();
+
+        if (zone.classList.contains("sequence-zone")) {
+          const after = getSequenceInsertBefore(zone, event.clientY);
+          if (after) {
+            zone.insertBefore(dragged, after);
+          } else {
+            zone.appendChild(dragged);
+          }
+        } else {
+          zone.appendChild(dragged);
+        }
+
+        fillEmptySlots();
+        clearResults();
+      });
+    }
+
+    function getSequenceInsertBefore(container, y) {
+      const draggable = [...container.querySelectorAll(".item:not(.dragging)")];
+      return draggable.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+    }
+
+    function renderTabs() {
+      tabs.replaceChildren();
+      tasks.forEach((task) => {
+        const button = document.createElement("button");
+        button.className = `tab${task.id === activeTaskId ? " active" : ""}`;
+        button.type = "button";
+        button.textContent = task.title;
+        button.addEventListener("click", () => {
+          activeTaskId = task.id;
+          render();
+        });
+        tabs.appendChild(button);
+      });
+    }
+
+    function render() {
+      const task = activeTask();
+      renderTabs();
+      itemBank.replaceChildren();
+      workArea.replaceChildren();
+      feedback.textContent = "";
+      taskTitle.textContent = task.title;
+      taskNote.textContent = task.mode === "sequence" ? "Place the steps in the correct order." : "Drag each item into the correct category.";
+      scenarioText.textContent = task.scenario;
+      score.textContent = `Score: 0 / ${task.mode === "sequence" ? task.sequence.length : task.items.length}`;
+
+      if (task.mode === "sequence") {
+        renderSequenceTask(task);
+      } else {
+        renderCategorizeTask(task);
+      }
+
+      prepareDropZone(itemBank);
+    }
+
+    function renderCategorizeTask(task) {
+      shuffle(task.items).forEach((item) => itemBank.appendChild(makeItem(item)));
+
+      const targets = document.createElement("div");
+      targets.className = "targets";
+      targets.classList.toggle("three", task.categories.length === 3);
+      targets.classList.toggle("four", task.categories.length === 4);
+      targets.classList.toggle("five", task.categories.length === 5);
+
+      task.categories.forEach((category) => {
+        const target = document.createElement("article");
+        target.className = "target";
+        target.dataset.targetId = category.id;
+
+        const title = document.createElement("h3");
+        title.textContent = category.title;
+
+        const zone = document.createElement("div");
+        zone.className = "drop-zone";
+        zone.appendChild(makeEmptyText("Drop items here"));
+
+        target.append(title, zone);
+        targets.appendChild(target);
+        prepareDropZone(zone);
+      });
+
+      workArea.appendChild(targets);
+    }
+
+    function renderSequenceTask(task) {
+      shuffle(task.sequence).forEach((item) => {
+        const correctIndex = task.sequence.findIndex((entry) => entry.id === item.id);
+        itemBank.appendChild(makeItem(item, correctIndex));
+      });
+
+      const target = document.createElement("article");
+      target.className = "target sequence-target";
+      target.dataset.targetId = "sequence";
+
+      const title = document.createElement("h3");
+      title.textContent = "Timeline";
+
+      const zone = document.createElement("div");
+      zone.className = "drop-zone sequence-zone";
+      zone.appendChild(makeEmptyText("Build the timeline here"));
+
+      target.append(title, zone);
+      workArea.appendChild(target);
+      prepareDropZone(zone);
+    }
+
+    function fillEmptySlots() {
+      document.querySelectorAll(".bank, .drop-zone").forEach((zone) => {
+        if (!zone.querySelector(".item") && !zone.querySelector(".empty")) {
+          const text = zone.classList.contains("sequence-zone")
+            ? "Build the timeline here"
+            : "Drop items here";
+          zone.appendChild(makeEmptyText(text));
+        }
+      });
+    }
+
+    function clearResults() {
+      document.querySelectorAll(".target").forEach((target) => {
+        target.classList.remove("correct", "wrong");
+      });
+      document.querySelectorAll(".item").forEach((item) => {
+        item.classList.remove("good", "bad");
+      });
+      feedback.textContent = "";
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll(".drop-zone .item").forEach((item) => itemBank.appendChild(item));
+      fillEmptySlots();
+      clearResults();
+      const task = activeTask();
+      score.textContent = `Score: 0 / ${task.mode === "sequence" ? task.sequence.length : task.items.length}`;
+    }
+
+    function checkAnswers() {
+      const task = activeTask();
+      if (task.mode === "sequence") {
+        checkSequence(task);
+      } else {
+        checkCategorize(task);
+      }
+    }
+
+    function checkCategorize(task) {
+      let correct = 0;
+
+      task.items.forEach((item) => {
+        const node = document.querySelector(`[data-item-id="${item.id}"]`);
+        const placedTarget = node.closest(".target")?.dataset.targetId;
+        const isCorrect = placedTarget === item.answer;
+        if (isCorrect) correct += 1;
+        node.classList.toggle("good", isCorrect);
+        node.classList.toggle("bad", Boolean(placedTarget && !isCorrect));
+      });
+
+      document.querySelectorAll(".target").forEach((target) => {
+        const placed = [...target.querySelectorAll(".item")];
+        const hasItems = placed.length > 0;
+        const allCorrect = placed.every((node) => node.dataset.answer === target.dataset.targetId);
+        target.classList.toggle("correct", hasItems && allCorrect);
+        target.classList.toggle("wrong", hasItems && !allCorrect);
+      });
+
+      score.textContent = `Score: ${correct} / ${task.items.length}`;
+      feedback.textContent = correct === task.items.length
+        ? "Perfect. All items are correctly placed."
+        : `${correct} correct out of ${task.items.length}.`;
+    }
+
+    function checkSequence(task) {
+      let correct = 0;
+      const zone = document.querySelector(".sequence-zone");
+      const placed = [...zone.querySelectorAll(".item")];
+
+      placed.forEach((node, index) => {
+        const isCorrect = Number(node.dataset.order) === index;
+        if (isCorrect) correct += 1;
+        node.classList.toggle("good", isCorrect);
+        node.classList.toggle("bad", !isCorrect);
+      });
+
+      document.querySelectorAll("#itemBank .item").forEach((node) => {
+        node.classList.remove("good");
+        node.classList.add("bad");
+      });
+
+      const target = document.querySelector(".sequence-target");
+      target.classList.toggle("correct", correct === task.sequence.length);
+      target.classList.toggle("wrong", correct !== task.sequence.length && placed.length > 0);
+
+      score.textContent = `Score: ${correct} / ${task.sequence.length}`;
+      feedback.textContent = correct === task.sequence.length
+        ? "Perfect. The timeline is correct."
+        : `${correct} positions correct out of ${task.sequence.length}.`;
+    }
+
+    checkBtn.addEventListener("click", checkAnswers);
+    resetBtn.addEventListener("click", resetAnswers);
+    shuffleBtn.addEventListener("click", render);
+
+    render();
+  </script>
+</body>
+</html>
