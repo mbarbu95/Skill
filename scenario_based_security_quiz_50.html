@@ -1,0 +1,938 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scenario-Based Security Quiz</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f3f6fa;
+      --panel: #ffffff;
+      --ink: #172033;
+      --muted: #64748b;
+      --line: #d6dee9;
+      --accent: #155eef;
+      --accent-soft: #eaf1ff;
+      --good: #16834d;
+      --bad: #bd3f35;
+      --warn: #8a6100;
+      --shadow: 0 12px 30px rgba(23, 32, 51, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    main {
+      width: min(1120px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 26px 0 42px;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 30px;
+      line-height: 1.15;
+    }
+
+    p {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score-box {
+      min-width: 190px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 12px 14px;
+      text-align: right;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+    }
+
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.96);
+      padding: 12px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .toolbar-info {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 13px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .secondary {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .quiz {
+      display: grid;
+      gap: 12px;
+    }
+
+    .question-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 15px;
+      box-shadow: var(--shadow);
+    }
+
+    .question-card.correct {
+      border-color: var(--good);
+      background: #f4fbf7;
+    }
+
+    .question-card.incorrect {
+      border-color: var(--bad);
+      background: #fff7f6;
+    }
+
+    .question-top {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .question-title {
+      display: grid;
+      gap: 5px;
+    }
+
+    .question-number {
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .question-text {
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .badge {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: #fff;
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .option {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      border-color: #aebbd0;
+      background: #fbfcff;
+    }
+
+    .option input {
+      margin-top: 2px;
+    }
+
+    .option span {
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .status {
+      display: none;
+      margin-top: 12px;
+      font-weight: 900;
+    }
+
+    .question-card.correct .status,
+    .question-card.incorrect .status {
+      display: block;
+    }
+
+    .question-card.correct .status {
+      color: var(--good);
+    }
+
+    .question-card.incorrect .status {
+      color: var(--bad);
+    }
+
+    .summary {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+
+    .summary.show {
+      display: block;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        grid-template-columns: 1fr;
+      }
+
+      .score-box {
+        text-align: left;
+      }
+
+      .toolbar {
+        position: static;
+      }
+
+      .question-top {
+        display: grid;
+      }
+
+      .badge {
+        width: max-content;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>Scenario-Based Security Quiz</h1>
+        <p>50 intermediate-hard questions, mixed single-choice and multi-select, all on one page.</p>
+      </div>
+      <div class="score-box" id="scoreBox">Score: 0 / 50</div>
+    </header>
+
+    <section class="toolbar" aria-label="Quiz controls">
+      <div class="toolbar-info" id="progressInfo">35 single-choice | 15 multi-select</div>
+      <div class="actions">
+        <button class="primary" id="submitBtn" type="button">Submit Quiz</button>
+        <button class="secondary" id="clearBtn" type="button">Clear Answers</button>
+      </div>
+    </section>
+
+    <div class="summary" id="summary" aria-live="polite"></div>
+    <form class="quiz" id="quizForm"></form>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        type: "single",
+        text: "A company uses a cloud file-sharing platform. Users authenticate through the corporate identity provider, and a third-party analytics app is granted limited access without receiving user passwords. Which mechanism best fits this requirement?",
+        options: [
+          { text: "SAML federation with an identity assertion", correct: false },
+          { text: "OAuth 2.0 delegated authorization", correct: true },
+          { text: "Kerberos constrained delegation", correct: false },
+          { text: "LDAP simple bind over TLS", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An endpoint shows repeated outbound connections to algorithmically generated domains and a newly created scheduled task. What is the best initial action?",
+        options: [
+          { text: "Reimage the endpoint immediately", correct: false },
+          { text: "Disable the user account and wait for more telemetry", correct: false },
+          { text: "Isolate the endpoint while preserving volatile evidence", correct: true },
+          { text: "Block all DNS traffic at the perimeter firewall", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A forensic analyst receives a suspect laptop drive. Which actions best preserve evidence integrity? (Select all that apply)",
+        options: [
+          { text: "Use a write blocker before acquisition", correct: true },
+          { text: "Calculate a hash before and after analysis", correct: true },
+          { text: "Document each evidence transfer", correct: true },
+          { text: "Run malware tools directly on the original drive", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A VPN concentrator uses a centralized AAA service. The security team needs login and logout records for remote users. Which traffic is most relevant for accounting?",
+        options: [
+          { text: "UDP 1812", correct: false },
+          { text: "UDP 1813", correct: true },
+          { text: "TCP 49", correct: false },
+          { text: "TCP 636", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An internal web application is reachable only after users authenticate to a system in a screened subnet. That system forwards approved sessions to backend servers. Which component is being described?",
+        options: [
+          { text: "Forward proxy", correct: false },
+          { text: "Reverse proxy", correct: true },
+          { text: "Transparent bridge", correct: false },
+          { text: "Host-based firewall", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A monitoring platform identifies three failed login attempts against the same account from three different workstations within one minute. No workstation triggers a local lockout. Which capability detects the pattern?",
+        options: [
+          { text: "Signature matching on the endpoint", correct: false },
+          { text: "Correlation across multiple event sources", correct: true },
+          { text: "Certificate revocation checking", correct: false },
+          { text: "Packet fragmentation analysis", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A cloud investigation is started after suspicious administrative activity. Which factors commonly complicate evidence collection? (Select all that apply)",
+        options: [
+          { text: "Coordination with the cloud service provider", correct: true },
+          { text: "Short-lived virtual resources", correct: true },
+          { text: "Data location and jurisdiction", correct: true },
+          { text: "Mandatory use of a local USB write blocker", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A development team accidentally commits API keys to a repository. An attacker uses the keys to create cloud resources. Which improvement would reduce the blast radius most effectively?",
+        options: [
+          { text: "Longer static keys stored in an encrypted spreadsheet", correct: false },
+          { text: "Short-lived scoped credentials from a secrets manager", correct: true },
+          { text: "A monthly manual review of all repository commits", correct: false },
+          { text: "Geo-blocking the repository hosting provider", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A user authenticates with a smart card and a PIN. How should the authentication factors be classified?",
+        options: [
+          { text: "Two knowledge factors", correct: false },
+          { text: "Possession and knowledge", correct: true },
+          { text: "Possession and inherence", correct: false },
+          { text: "Two possession factors", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "An alert references a process that executed from memory, changed its hash between samples, and produced consistent command-and-control behavior. Which analysis methods are appropriate? (Select all that apply)",
+        options: [
+          { text: "Behavioral detection", correct: true },
+          { text: "Memory capture", correct: true },
+          { text: "Endpoint telemetry review", correct: true },
+          { text: "Static hash blocking as the only control", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A web server log contains repeated requests for encoded dot-dot-slash paths and attempts to read system files outside the web root. Which attack is most likely?",
+        options: [
+          { text: "Cross-site scripting", correct: false },
+          { text: "Directory traversal", correct: true },
+          { text: "XML external entity validation", correct: false },
+          { text: "Session fixation", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An executive receives a highly personalized invoice email referencing a recent acquisition. The message asks for urgent payment approval. Which label best fits the targeting?",
+        options: [
+          { text: "Whaling", correct: true },
+          { text: "Credential stuffing", correct: false },
+          { text: "Watering hole", correct: false },
+          { text: "Domain hijacking", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A system must prove that a document was not modified and that the sender cannot credibly deny sending it. Confidentiality is not required. Which control best fits?",
+        options: [
+          { text: "Symmetric encryption with a shared key", correct: false },
+          { text: "Digital signature", correct: true },
+          { text: "Network segmentation", correct: false },
+          { text: "Password-based key derivation", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A business continuity review finds a single point of failure in a payment process. Which actions directly support continuity planning? (Select all that apply)",
+        options: [
+          { text: "Perform a business impact analysis", correct: true },
+          { text: "Introduce redundancy for critical services", correct: true },
+          { text: "Build vendor diversity into the plan", correct: true },
+          { text: "Increase the acceptable recovery point objective without approval", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "Wireless clients are repeatedly forced off the network. Access point logs show bursts of management frames that disconnect associated clients. Which attack is most consistent with the evidence?",
+        options: [
+          { text: "Rogue DHCP assignment", correct: false },
+          { text: "Deauthentication attack", correct: true },
+          { text: "Bluetooth bluesnarfing", correct: false },
+          { text: "IV collision recovery", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "Contractors must access selected SaaS applications using their home organization identities. The host company does not want to create local user accounts. Which solution is most appropriate?",
+        options: [
+          { text: "Federation using identity assertions", correct: true },
+          { text: "Local guest accounts with shared passwords", correct: false },
+          { text: "Static IP allowlisting only", correct: false },
+          { text: "Offline certificate revocation lists", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "Two organizations operate separate certificate authorities and need mutual certificate trust without migrating to a single root authority. Which model best fits?",
+        options: [
+          { text: "Bridge trust", correct: true },
+          { text: "Key escrow", correct: false },
+          { text: "Self-signed hierarchy", correct: false },
+          { text: "OCSP stapling", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A compromised server is still running and may contain evidence in memory. Which actions should occur before powering it down? (Select all that apply)",
+        options: [
+          { text: "Capture volatile memory", correct: true },
+          { text: "Record active network connections", correct: true },
+          { text: "Document the system time offset", correct: true },
+          { text: "Power off immediately to prevent any file change", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "Users suddenly cannot access domain resources. Investigation shows several systems have clocks that differ from the domain controller by more than the accepted threshold. Which service is most affected?",
+        options: [
+          { text: "Kerberos", correct: true },
+          { text: "SNMPv2c", correct: false },
+          { text: "DNSSEC", correct: false },
+          { text: "SFTP", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A resource policy grants access based on department, clearance, device compliance, location, and time of day. Which access control model is most aligned?",
+        options: [
+          { text: "Discretionary access control", correct: false },
+          { text: "Mandatory access control", correct: false },
+          { text: "Attribute-based access control", correct: true },
+          { text: "Rule-based firewall filtering only", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A dashboard is configured to monitor regulated personal data and maintain breach tracking for compliance reporting. Which SIEM dashboard area is being emphasized?",
+        options: [
+          { text: "Sensors", correct: false },
+          { text: "Sensitivity", correct: true },
+          { text: "Trends", correct: false },
+          { text: "Packet capture", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A web-based attack is under investigation. Which evidence sources are most useful for identifying the source and behavior of the attack? (Select all that apply)",
+        options: [
+          { text: "Network traffic capture", correct: true },
+          { text: "Web server logs", correct: true },
+          { text: "Firewall or NIDS logs", correct: true },
+          { text: "Printer spooler job history", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A threat-hunting team wants to map observed adversary behavior to tactics, techniques, known groups, and mitigations. Which framework is the best fit?",
+        options: [
+          { text: "Diamond Model only", correct: false },
+          { text: "MITRE ATT&CK", correct: true },
+          { text: "Business continuity lifecycle", correct: false },
+          { text: "Chain of custody model", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A vulnerability with moderate severity is exposed to the internet and has active exploitation. A higher-severity issue exists only on an isolated lab host. What should be patched first?",
+        options: [
+          { text: "The higher-severity lab issue because severity always dominates", correct: false },
+          { text: "The internet-facing exploited issue because exposure and exploitation change priority", correct: true },
+          { text: "Both only after the next quarterly change window", correct: false },
+          { text: "Neither until a formal penetration test confirms exploitability", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A database record is changed without authorization, but no data is disclosed and the service remains available. Which security objective is most directly affected?",
+        options: [
+          { text: "Confidentiality", correct: false },
+          { text: "Integrity", correct: true },
+          { text: "Availability", correct: false },
+          { text: "Non-repudiation", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A mobile device with corporate documents is lost. Which controls help reduce the risk to company data? (Select all that apply)",
+        options: [
+          { text: "Full device encryption", correct: true },
+          { text: "Remote wipe through device management", correct: true },
+          { text: "Containerization for corporate data", correct: true },
+          { text: "MAC filtering on the office wireless network", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A file share allows the data owner to decide who can read or modify files. Which access control model is primarily being used?",
+        options: [
+          { text: "Discretionary access control", correct: true },
+          { text: "Mandatory access control", correct: false },
+          { text: "Attribute-based access control", correct: false },
+          { text: "Non-discretionary lattice control", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A malicious insider attempts to modify local logs after exfiltrating sensitive files. Which detective design would best preserve useful evidence?",
+        options: [
+          { text: "Local-only logs with daily manual export", correct: false },
+          { text: "Centralized log aggregation with restricted write access", correct: true },
+          { text: "User-managed audit settings on each workstation", correct: false },
+          { text: "Disabling audit logs to reduce tampering targets", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A certificate validation design must determine revocation status and improve validation performance. Which items are relevant? (Select all that apply)",
+        options: [
+          { text: "Certificate revocation list", correct: true },
+          { text: "Online Certificate Status Protocol", correct: true },
+          { text: "OCSP stapling", correct: true },
+          { text: "Certificate signing request", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An administrator needs encrypted remote command-line access to network devices. Which protocol should be used?",
+        options: [
+          { text: "Telnet", correct: false },
+          { text: "SSH", correct: true },
+          { text: "TFTP", correct: false },
+          { text: "SNMPv1", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A firewall rule must allow client systems to perform standard recursive name lookups against an internal resolver. Which traffic is most commonly required?",
+        options: [
+          { text: "TCP 25", correct: false },
+          { text: "UDP 53", correct: true },
+          { text: "UDP 67", correct: false },
+          { text: "TCP 389", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A login process requires a password, a PIN, and answers to security questions. How many authentication factor categories are represented?",
+        options: [
+          { text: "One", correct: true },
+          { text: "Two", correct: false },
+          { text: "Three", correct: false },
+          { text: "Four", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A security team suspects password spraying. Which observations support that conclusion? (Select all that apply)",
+        options: [
+          { text: "One common password tested across many accounts", correct: true },
+          { text: "Low attempt counts per individual account", correct: true },
+          { text: "Attempts distributed to avoid lockout thresholds", correct: true },
+          { text: "Thousands of passwords attempted against one username", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A third-party calendar app asks a user to approve limited access to calendar data without sharing the user's password with the app. Which protocol family is most likely involved?",
+        options: [
+          { text: "OAuth", correct: true },
+          { text: "RADIUS", correct: false },
+          { text: "Kerberos", correct: false },
+          { text: "LDAPS", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A workstation begins encrypting local and mapped-drive files, deletes backup snapshots, and displays a payment demand. What should be the first response priority?",
+        options: [
+          { text: "Negotiate payment to preserve business operations", correct: false },
+          { text: "Isolate affected systems to limit spread", correct: true },
+          { text: "Restore files to the same connected shares immediately", correct: false },
+          { text: "Disable all network monitoring to reduce noise", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "After malware containment, which actions belong in eradication before normal recovery? (Select all that apply)",
+        options: [
+          { text: "Remove malicious files or persistence", correct: true },
+          { text: "Patch the exploited weakness", correct: true },
+          { text: "Disable unnecessary vulnerable services", correct: true },
+          { text: "Return the host to production before validation", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A company wants to log and filter outbound web traffic from internal users before requests reach the internet. Which component best fits?",
+        options: [
+          { text: "Forward proxy", correct: true },
+          { text: "Reverse proxy", correct: false },
+          { text: "Layer 2 bridge", correct: false },
+          { text: "Certificate authority", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A reverse proxy returns HTTP 502 errors because an upstream server is returning invalid responses. Which status-code class best describes the issue?",
+        options: [
+          { text: "100-series informational", correct: false },
+          { text: "300-series redirection", correct: false },
+          { text: "400-series client error", correct: false },
+          { text: "500-series server error", correct: true }
+        ]
+      },
+      {
+        type: "multi",
+        text: "Which elements are part of the Diamond Model of intrusion analysis? (Select all that apply)",
+        options: [
+          { text: "Adversary", correct: true },
+          { text: "Capabilities", correct: true },
+          { text: "Infrastructure", correct: true },
+          { text: "Victim", correct: true }
+        ]
+      },
+      {
+        type: "single",
+        text: "An organization conducts a paper-based hypothetical disaster discussion where stakeholders explain what they would do. Which exercise type is this?",
+        options: [
+          { text: "Tabletop exercise", correct: true },
+          { text: "Full simulation", correct: false },
+          { text: "Structured physical walk-through", correct: false },
+          { text: "Parallel production cutover", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A mobile banking application should reject fraudulent certificates even if a compromised authority issues them. Which control best addresses this risk?",
+        options: [
+          { text: "Certificate pinning", correct: true },
+          { text: "Key escrow", correct: false },
+          { text: "Domain validation", correct: false },
+          { text: "Password vaulting", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "Which log sources are most likely to provide identity or authentication evidence? (Select all that apply)",
+        options: [
+          { text: "Security event logs", correct: true },
+          { text: "RADIUS logs", correct: true },
+          { text: "Domain controller authentication logs", correct: true },
+          { text: "DNS cache records only", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An investigator cannot directly image provider-owned cloud storage and must rely on provider-supplied logs and snapshots. Which issue is most central?",
+        options: [
+          { text: "Cloud service provider dependency", correct: true },
+          { text: "Local write blocker failure", correct: false },
+          { text: "Mandatory chain-of-trust collapse", correct: false },
+          { text: "Loss of all jurisdictional requirements", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A login form accepts input that changes the database query logic and bypasses authentication. Which attack is most likely?",
+        options: [
+          { text: "LDAP signing", correct: false },
+          { text: "SQL injection", correct: true },
+          { text: "DNS amplification", correct: false },
+          { text: "Certificate spoofing", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "During containment of a suspected endpoint compromise, which actions are appropriate? (Select all that apply)",
+        options: [
+          { text: "Isolate the host from the network", correct: true },
+          { text: "Quarantine affected systems", correct: true },
+          { text: "Collect volatile evidence when possible", correct: true },
+          { text: "Permanently delete infected files as the first step", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "An examiner needs to acquire a storage device while preventing writes to the original media. Which approach best fits?",
+        options: [
+          { text: "Boot the suspect OS and copy files manually", correct: false },
+          { text: "Use a write blocker and create a forensic image", correct: true },
+          { text: "Run recovery tools directly against the source disk", correct: false },
+          { text: "Compress the original disk before hashing it", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A branch office connects to headquarters using encrypted network-to-network communication over the internet. Which design best fits?",
+        options: [
+          { text: "Clientless web portal", correct: false },
+          { text: "Site-to-site IPsec tunnel mode", correct: true },
+          { text: "Transport mode between two applications only", correct: false },
+          { text: "Dial-up remote access server", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "Which SIEM capabilities support real-time detection across multiple systems? (Select all that apply)",
+        options: [
+          { text: "Agents or sensors collecting events", correct: true },
+          { text: "Log aggregation", correct: true },
+          { text: "Correlation rules", correct: true },
+          { text: "Manual-only review of isolated local logs", correct: false }
+        ]
+      },
+      {
+        type: "single",
+        text: "A hospital places a doctor's mailbox under a preservation requirement during an investigation. The user can still send and receive mail, but deletion limits are suspended. Which process is being used?",
+        options: [
+          { text: "Legal hold", correct: true },
+          { text: "Key escrow", correct: false },
+          { text: "Data masking", correct: false },
+          { text: "Credential vaulting", correct: false }
+        ]
+      },
+      {
+        type: "multi",
+        text: "A web log review focuses on client-side HTTP error classes. Which status codes fit that category? (Select all that apply)",
+        options: [
+          { text: "403 Forbidden", correct: true },
+          { text: "404 Not Found", correct: true },
+          { text: "500 Internal Server Error", correct: false },
+          { text: "302 Found", correct: false }
+        ]
+      }
+    ];
+
+    const quizForm = document.getElementById("quizForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const scoreBox = document.getElementById("scoreBox");
+    const summary = document.getElementById("summary");
+    const progressInfo = document.getElementById("progressInfo");
+
+    function optionLetter(index) {
+      return String.fromCharCode(65 + index);
+    }
+
+    function renderQuiz() {
+      quizForm.replaceChildren();
+
+      questions.forEach((question, questionIndex) => {
+        const card = document.createElement("section");
+        card.className = "question-card";
+        card.dataset.index = String(questionIndex);
+
+        const top = document.createElement("div");
+        top.className = "question-top";
+
+        const title = document.createElement("div");
+        title.className = "question-title";
+
+        const number = document.createElement("div");
+        number.className = "question-number";
+        number.textContent = `Question ${questionIndex + 1}`;
+
+        const text = document.createElement("div");
+        text.className = "question-text";
+        text.textContent = question.text;
+
+        const badge = document.createElement("div");
+        badge.className = "badge";
+        badge.textContent = question.type === "multi" ? "Multi-select" : "Single-choice";
+
+        title.append(number, text);
+        top.append(title, badge);
+
+        const options = document.createElement("div");
+        options.className = "options";
+
+        question.options.forEach((option, optionIndex) => {
+          const id = `q${questionIndex}_o${optionIndex}`;
+          const label = document.createElement("label");
+          label.className = "option";
+          label.setAttribute("for", id);
+
+          const input = document.createElement("input");
+          input.type = question.type === "multi" ? "checkbox" : "radio";
+          input.name = `q${questionIndex}`;
+          input.id = id;
+          input.value = String(optionIndex);
+
+          const optionText = document.createElement("span");
+          optionText.textContent = `${optionLetter(optionIndex)}. ${option.text}`;
+
+          label.append(input, optionText);
+          options.appendChild(label);
+        });
+
+        const status = document.createElement("div");
+        status.className = "status";
+        status.textContent = "";
+
+        card.append(top, options, status);
+        quizForm.appendChild(card);
+      });
+
+      const singleCount = questions.filter((q) => q.type === "single").length;
+      const multiCount = questions.filter((q) => q.type === "multi").length;
+      progressInfo.textContent = `${singleCount} single-choice | ${multiCount} multi-select`;
+    }
+
+    function selectedIndexes(questionIndex) {
+      return [...document.querySelectorAll(`[name="q${questionIndex}"]:checked`)]
+        .map((input) => Number(input.value))
+        .sort((a, b) => a - b);
+    }
+
+    function correctIndexes(question) {
+      return question.options
+        .map((option, index) => option.correct ? index : -1)
+        .filter((index) => index !== -1)
+        .sort((a, b) => a - b);
+    }
+
+    function arraysEqual(a, b) {
+      return a.length === b.length && a.every((value, index) => value === b[index]);
+    }
+
+    function gradeQuiz() {
+      let score = 0;
+      let answered = 0;
+
+      questions.forEach((question, questionIndex) => {
+        const card = document.querySelector(`[data-index="${questionIndex}"]`);
+        const status = card.querySelector(".status");
+        const selected = selectedIndexes(questionIndex);
+        const correct = correctIndexes(question);
+        const isAnswered = selected.length > 0;
+        const isCorrect = arraysEqual(selected, correct);
+
+        if (isAnswered) answered += 1;
+        if (isCorrect) score += 1;
+
+        card.classList.toggle("correct", isCorrect);
+        card.classList.toggle("incorrect", !isCorrect);
+        status.textContent = isCorrect ? "Correct" : (isAnswered ? "Review this question" : "Unanswered");
+      });
+
+      scoreBox.textContent = `Score: ${score} / ${questions.length}`;
+      summary.classList.add("show");
+      summary.textContent = `Score: ${score} / ${questions.length}. Answered: ${answered} / ${questions.length}. Multi-select questions require the exact set of correct choices.`;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function clearAnswers() {
+      document.querySelectorAll("input").forEach((input) => {
+        input.checked = false;
+      });
+      document.querySelectorAll(".question-card").forEach((card) => {
+        card.classList.remove("correct", "incorrect");
+        card.querySelector(".status").textContent = "";
+      });
+      summary.classList.remove("show");
+      summary.textContent = "";
+      scoreBox.textContent = `Score: 0 / ${questions.length}`;
+    }
+
+    submitBtn.addEventListener("click", gradeQuiz);
+    clearBtn.addEventListener("click", clearAnswers);
+
+    renderQuiz();
+  </script>
+</body>
+</html>
