@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cybersecurity Scenario-Based Practice Set</title>
+<style>
+    body { font-family: Arial, sans-serif; background:#f4f6f8; margin:0; color:#1f2937; }
+    header { background:#111827; color:white; padding:32px 20px; text-align:center; }
+    header h1 { margin:0; font-size:30px; }
+    header p { color:#d1d5db; margin:10px 0 0; }
+    main { max-width:1050px; margin:32px auto; padding:0 18px; }
+    .question-card { background:white; border-radius:12px; padding:24px; margin-bottom:24px; box-shadow:0 4px 14px rgba(0,0,0,.08); border-left:6px solid #2563eb; }
+    h2 { margin-top:0; font-size:21px; color:#111827; }
+    .scenario { background:#f9fafb; border:1px solid #e5e7eb; padding:14px; border-radius:8px; line-height:1.55; }
+    .options label { display:block; margin:10px 0; padding:11px; background:#f3f4f6; border-radius:8px; cursor:pointer; line-height:1.45; }
+    .options label:hover { background:#e5e7eb; }
+    input[type='text'], textarea { width:100%; box-sizing:border-box; padding:10px; border:1px solid #d1d5db; border-radius:8px; font-size:15px; margin-top:8px; }
+    textarea { min-height:72px; }
+    button { background:#2563eb; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-size:15px; margin-top:12px; }
+    button:hover { background:#1d4ed8; }
+    .answer { display:none; margin-top:16px; padding:14px; background:#ecfdf5; border-left:5px solid #10b981; border-radius:8px; line-height:1.55; }
+    .response-box { margin-top:14px; }
+    footer { text-align:center; padding:30px; color:#6b7280; font-size:14px; }
+</style>
+</head>
+<body>
+<header><h1>Cybersecurity Scenario-Based Practice Set</h1><p>40 professional scenario-based questions for practical security analysis and decision-making.</p></header>
+<main>
+<section class="question-card">
+<h2>Scenario 1 - Privileged Access Request</h2>
+<div class="scenario">A database administrator requests temporary elevated access to troubleshoot a production issue. The request is urgent, but the ticket contains only a short description and no business owner approval.</div>
+<p><strong>What is the most appropriate next action?</strong></p>
+<div class="options">
+<label><input type="radio" name="q1" /> A. Grant the access because the requester is part of the database team.</label>
+<label><input type="radio" name="q1" /> B. Require documented approval and apply time-bound privileged access.</label>
+<label><input type="radio" name="q1" /> C. Create a shared emergency administrator account for the team.</label>
+<label><input type="radio" name="q1" /> D. Disable logging to reduce operational impact during troubleshooting.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a1')">Show Answer</button>
+<div class="answer" id="a1"><strong>Correct answer:</strong> Require documented approval and apply time-bound privileged access.<br><strong>Explanation:</strong> Privileged access should be approved, limited in duration, and logged. Urgency does not remove the need for authorization and accountability.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 2 - Endpoint Alert Triage</h2>
+<div class="scenario">An endpoint alert shows powershell.exe launched from winword.exe shortly after a user opened an attachment. The command includes encoded content and initiates an outbound HTTPS connection to an unfamiliar domain.</div>
+<p><strong>Which activity is most suspicious?</strong></p>
+<div class="options">
+<label><input type="radio" name="q2" /> A. PowerShell launched by a Microsoft Office process with encoded content.</label>
+<label><input type="radio" name="q2" /> B. The workstation used HTTPS for external communication.</label>
+<label><input type="radio" name="q2" /> C. The user opened a document attachment.</label>
+<label><input type="radio" name="q2" /> D. The endpoint generated a security alert.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a2')">Show Answer</button>
+<div class="answer" id="a2"><strong>Correct answer:</strong> PowerShell launched by a Microsoft Office process with encoded content.<br><strong>Explanation:</strong> Office spawning PowerShell with encoded content is a strong indicator of malicious macro or document-based execution. HTTPS alone is common and not sufficient by itself.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 3 - Data Loss Prevention Event</h2>
+<div class="scenario">A finance user attempts to email a spreadsheet containing account numbers to a personal mailbox. The message is blocked and the user receives a policy notification.</div>
+<p><strong>Which control most likely generated this event?</strong></p>
+<div class="options">
+<label><input type="radio" name="q3" /> A. DLP</label>
+<label><input type="radio" name="q3" /> B. IDS</label>
+<label><input type="radio" name="q3" /> C. NAC</label>
+<label><input type="radio" name="q3" /> D. FDE</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a3')">Show Answer</button>
+<div class="answer" id="a3"><strong>Correct answer:</strong> DLP<br><strong>Explanation:</strong> Data Loss Prevention tools inspect content and enforce policies to prevent sensitive data from leaving approved channels.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 4 - Wireless Guest Network</h2>
+<div class="scenario">A company wants visitors to access the internet without being able to reach internal file shares, printers, or management interfaces.</div>
+<p><strong>Which design choice best supports this requirement?</strong></p>
+<div class="options">
+<label><input type="radio" name="q4" /> A. Place guest clients on a segmented network with restricted routing.</label>
+<label><input type="radio" name="q4" /> B. Use the same SSID and password as employees for convenience.</label>
+<label><input type="radio" name="q4" /> C. Disable wireless encryption because guests are temporary users.</label>
+<label><input type="radio" name="q4" /> D. Allow guest devices to resolve all internal hostnames.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a4')">Show Answer</button>
+<div class="answer" id="a4"><strong>Correct answer:</strong> Place guest clients on a segmented network with restricted routing.<br><strong>Explanation:</strong> Guest wireless should be separated from internal resources using segmentation, routing restrictions, and appropriate firewall rules.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 5 - Certificate Warning Investigation</h2>
+<div class="scenario">Users report certificate warnings when accessing a company portal. The browser shows that the certificate was issued to a different hostname and is not trusted by the client.</div>
+<p><strong>What is the most likely issue?</strong></p>
+<div class="options">
+<label><input type="radio" name="q5" /> A. Certificate name/trust validation is failing.</label>
+<label><input type="radio" name="q5" /> B. The web server is using too much bandwidth.</label>
+<label><input type="radio" name="q5" /> C. The users entered the correct password too many times.</label>
+<label><input type="radio" name="q5" /> D. The endpoint firewall is blocking DNS queries.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a5')">Show Answer</button>
+<div class="answer" id="a5"><strong>Correct answer:</strong> Certificate name/trust validation is failing.<br><strong>Explanation:</strong> A hostname mismatch or untrusted issuer causes browser certificate warnings and may indicate misconfiguration or interception.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 6 - Backup Strategy Review</h2>
+<div class="scenario">A ransomware incident encrypted several shared folders. Backups exist, but the latest backup is also encrypted because it was connected and writable during the incident.</div>
+<p><strong>Which improvement would most directly reduce this failure mode?</strong></p>
+<div class="options">
+<label><input type="radio" name="q6" /> A. Maintain immutable or offline backup copies.</label>
+<label><input type="radio" name="q6" /> B. Increase the desktop wallpaper timeout.</label>
+<label><input type="radio" name="q6" /> C. Use shorter filenames on the file share.</label>
+<label><input type="radio" name="q6" /> D. Allow all users to restore files without approval.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a6')">Show Answer</button>
+<div class="answer" id="a6"><strong>Correct answer:</strong> Maintain immutable or offline backup copies.<br><strong>Explanation:</strong> Immutable or offline backups prevent attackers from modifying or encrypting the recovery copy during an incident.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 7 - Network Access Control</h2>
+<div class="scenario">The security team wants to verify device compliance before allowing laptops onto the corporate network. Non-compliant devices should be placed into a restricted remediation network.</div>
+<p><strong>Which technology best fits the requirement?</strong></p>
+<div class="options">
+<label><input type="radio" name="q7" /> A. NAC</label>
+<label><input type="radio" name="q7" /> B. HSM</label>
+<label><input type="radio" name="q7" /> C. WAF</label>
+<label><input type="radio" name="q7" /> D. CASB</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a7')">Show Answer</button>
+<div class="answer" id="a7"><strong>Correct answer:</strong> NAC<br><strong>Explanation:</strong> Network Access Control evaluates device identity and posture before permitting network access or placing devices in restricted segments.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 8 - Web Application Protection</h2>
+<div class="scenario">A public web application receives suspicious requests containing SQL-like payloads in form fields. The development team cannot immediately patch the code.</div>
+<p><strong>Which compensating control is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q8" /> A. Deploy or tune a WAF rule set for the application.</label>
+<label><input type="radio" name="q8" /> B. Disable all server logging.</label>
+<label><input type="radio" name="q8" /> C. Move the database to the same host as the web server.</label>
+<label><input type="radio" name="q8" /> D. Allow anonymous administrative access temporarily.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a8')">Show Answer</button>
+<div class="answer" id="a8"><strong>Correct answer:</strong> Deploy or tune a WAF rule set for the application.<br><strong>Explanation:</strong> A Web Application Firewall can inspect and block malicious web requests while the underlying application is being fixed.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 9 - Cloud Storage Exposure</h2>
+<div class="scenario">A cloud storage audit finds that a folder containing internal project documents is accessible through a public link without authentication.</div>
+<p><strong>Which action should be prioritized?</strong></p>
+<div class="options">
+<label><input type="radio" name="q9" /> A. Revoke public sharing and require authenticated access.</label>
+<label><input type="radio" name="q9" /> B. Rename the folder to a less obvious name.</label>
+<label><input type="radio" name="q9" /> C. Ask users not to download files after business hours.</label>
+<label><input type="radio" name="q9" /> D. Increase the size limit for uploaded documents.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a9')">Show Answer</button>
+<div class="answer" id="a9"><strong>Correct answer:</strong> Revoke public sharing and require authenticated access.<br><strong>Explanation:</strong> Public anonymous links expose data. Access should be restricted to authenticated and authorized users.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 10 - SIEM Correlation Rule</h2>
+<div class="scenario">An analyst wants to detect successful logins that occur shortly after multiple failures from the same source against the same account.</div>
+<p><strong>Which data is most important for the correlation?</strong></p>
+<div class="options">
+<label><input type="radio" name="q10" /> A. Timestamp, account, source address, and authentication result.</label>
+<label><input type="radio" name="q10" /> B. Monitor resolution and keyboard layout.</label>
+<label><input type="radio" name="q10" /> C. Printer model and toner level.</label>
+<label><input type="radio" name="q10" /> D. User desktop background and screen saver settings.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a10')">Show Answer</button>
+<div class="answer" id="a10"><strong>Correct answer:</strong> Timestamp, account, source address, and authentication result.<br><strong>Explanation:</strong> These fields allow correlation of failed and successful authentication events over time for the same account and source.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 11 - Least Privilege Review</h2>
+<div class="scenario">A service account used by an application has domain administrator rights, although the application only needs read access to one database.</div>
+<p><strong>Which recommendation best follows the principle of least privilege?</strong></p>
+<div class="options">
+<label><input type="radio" name="q11" /> A. Reduce the service account permissions to only the required database access.</label>
+<label><input type="radio" name="q11" /> B. Keep domain administrator rights because troubleshooting is easier.</label>
+<label><input type="radio" name="q11" /> C. Share the service account password with all developers.</label>
+<label><input type="radio" name="q11" /> D. Disable all password rotation for the account.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a11')">Show Answer</button>
+<div class="answer" id="a11"><strong>Correct answer:</strong> Reduce the service account permissions to only the required database access.<br><strong>Explanation:</strong> Least privilege requires granting only the access necessary to perform the function, reducing impact if the account is misused.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 12 - Vulnerability Prioritization</h2>
+<div class="scenario">A vulnerability scan identifies three findings: a critical internet-facing remote code execution flaw, a medium internal software version issue, and a low informational banner disclosure.</div>
+<p><strong>Which finding should be prioritized first?</strong></p>
+<div class="options">
+<label><input type="radio" name="q12" /> A. The critical internet-facing remote code execution flaw.</label>
+<label><input type="radio" name="q12" /> B. The low informational banner disclosure.</label>
+<label><input type="radio" name="q12" /> C. The medium internal software version issue.</label>
+<label><input type="radio" name="q12" /> D. The finding with the shortest description.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a12')">Show Answer</button>
+<div class="answer" id="a12"><strong>Correct answer:</strong> The critical internet-facing remote code execution flaw.<br><strong>Explanation:</strong> Severity, exposure, and exploitability drive prioritization. Internet-facing RCE presents high risk and should be addressed first.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 13 - Incident Evidence Handling</h2>
+<div class="scenario">An analyst collects a disk image from a potentially compromised system. The image may be used in a formal investigation.</div>
+<p><strong>Which practice is most important for preserving evidentiary integrity?</strong></p>
+<div class="options">
+<label><input type="radio" name="q13" /> A. Maintain chain-of-custody documentation and verify hashes.</label>
+<label><input type="radio" name="q13" /> B. Edit timestamps to match business hours.</label>
+<label><input type="radio" name="q13" /> C. Store the image on an unsecured shared drive for convenience.</label>
+<label><input type="radio" name="q13" /> D. Boot the original disk repeatedly to confirm the issue.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a13')">Show Answer</button>
+<div class="answer" id="a13"><strong>Correct answer:</strong> Maintain chain-of-custody documentation and verify hashes.<br><strong>Explanation:</strong> Evidence integrity depends on documented handling and hash verification to show that data was not altered.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 14 - Remote Access Hardening</h2>
+<div class="scenario">Administrators access internal systems remotely. Recent logs show repeated login attempts from unusual locations against administrative accounts.</div>
+<p><strong>Which combination provides the strongest improvement?</strong></p>
+<div class="options">
+<label><input type="radio" name="q14" /> A. VPN with MFA and conditional access policies.</label>
+<label><input type="radio" name="q14" /> B. A shared administrator password sent by email.</label>
+<label><input type="radio" name="q14" /> C. Allowing remote access from any source without monitoring.</label>
+<label><input type="radio" name="q14" /> D. Removing all logging from administrative systems.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a14')">Show Answer</button>
+<div class="answer" id="a14"><strong>Correct answer:</strong> VPN with MFA and conditional access policies.<br><strong>Explanation:</strong> Secure remote access should require encrypted access paths, strong authentication, and risk-based restrictions.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 15 - Malware Persistence</h2>
+<div class="scenario">A host shows a suspicious executable launched after every reboot. The execution source is a scheduled task created under a user profile path.</div>
+<p><strong>What does this most likely indicate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q15" /> A. Persistence mechanism.</label>
+<label><input type="radio" name="q15" /> B. Normal memory allocation.</label>
+<label><input type="radio" name="q15" /> C. Printer queue optimization.</label>
+<label><input type="radio" name="q15" /> D. Expected certificate renewal.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a15')">Show Answer</button>
+<div class="answer" id="a15"><strong>Correct answer:</strong> Persistence mechanism.<br><strong>Explanation:</strong> Scheduled tasks are commonly abused to maintain execution after reboot or user logon.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 16 - Email Authentication</h2>
+<div class="scenario">A domain owner wants to reduce spoofed email using DNS-published policies and sender validation mechanisms.</div>
+<p><strong>Which set of technologies is most relevant?</strong></p>
+<div class="options">
+<label><input type="radio" name="q16" /> A. SPF, DKIM, and DMARC.</label>
+<label><input type="radio" name="q16" /> B. NTP, SNMP, and DHCP.</label>
+<label><input type="radio" name="q16" /> C. RAID, LVM, and GPT.</label>
+<label><input type="radio" name="q16" /> D. HTML, CSS, and JSON.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a16')">Show Answer</button>
+<div class="answer" id="a16"><strong>Correct answer:</strong> SPF, DKIM, and DMARC.<br><strong>Explanation:</strong> SPF, DKIM, and DMARC help validate email sources, message integrity, and domain policy handling.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 17 - Secure Configuration Baseline</h2>
+<div class="scenario">A company deploys new servers using default vendor settings. Several unnecessary services remain enabled, and default accounts are still present.</div>
+<p><strong>Which activity should be performed?</strong></p>
+<div class="options">
+<label><input type="radio" name="q17" /> A. System hardening against an approved baseline.</label>
+<label><input type="radio" name="q17" /> B. Increasing the number of unused services.</label>
+<label><input type="radio" name="q17" /> C. Publishing default credentials to the team wiki.</label>
+<label><input type="radio" name="q17" /> D. Disabling all security monitoring.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a17')">Show Answer</button>
+<div class="answer" id="a17"><strong>Correct answer:</strong> System hardening against an approved baseline.<br><strong>Explanation:</strong> Hardening removes unnecessary services, changes defaults, and aligns systems with security baselines.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 18 - Zero Trust Access</h2>
+<div class="scenario">A company wants application access decisions to consider user identity, device health, location, and session risk rather than trusting traffic based only on network location.</div>
+<p><strong>Which security model best aligns with this approach?</strong></p>
+<div class="options">
+<label><input type="radio" name="q18" /> A. Zero Trust.</label>
+<label><input type="radio" name="q18" /> B. Implicit trust based on internal IP ranges.</label>
+<label><input type="radio" name="q18" /> C. Flat network trust.</label>
+<label><input type="radio" name="q18" /> D. Anonymous access by default.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a18')">Show Answer</button>
+<div class="answer" id="a18"><strong>Correct answer:</strong> Zero Trust.<br><strong>Explanation:</strong> Zero Trust continuously evaluates identity, context, and device posture instead of assuming trust based on network placement.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 19 - Container Image Security</h2>
+<div class="scenario">A development team uses container images from public repositories. Security wants to reduce the chance of deploying images with known vulnerabilities or embedded secrets.</div>
+<p><strong>Which practice is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q19" /> A. Scan container images before deployment and enforce trusted registries.</label>
+<label><input type="radio" name="q19" /> B. Run all containers as privileged by default.</label>
+<label><input type="radio" name="q19" /> C. Store credentials inside the image for portability.</label>
+<label><input type="radio" name="q19" /> D. Disable image version tracking.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a19')">Show Answer</button>
+<div class="answer" id="a19"><strong>Correct answer:</strong> Scan container images before deployment and enforce trusted registries.<br><strong>Explanation:</strong> Image scanning and trusted registries reduce exposure to vulnerable, tampered, or misconfigured container images.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 20 - Logging Coverage Gap</h2>
+<div class="scenario">An investigation cannot determine which user changed a firewall rule because administrative actions were not captured centrally.</div>
+<p><strong>Which improvement addresses the gap?</strong></p>
+<div class="options">
+<label><input type="radio" name="q20" /> A. Forward administrative audit logs to a centralized logging platform.</label>
+<label><input type="radio" name="q20" /> B. Delete firewall rules after each change window.</label>
+<label><input type="radio" name="q20" /> C. Allow rule changes only from personal laptops without logging.</label>
+<label><input type="radio" name="q20" /> D. Store logs only on the administrator’s workstation.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a20')">Show Answer</button>
+<div class="answer" id="a20"><strong>Correct answer:</strong> Forward administrative audit logs to a centralized logging platform.<br><strong>Explanation:</strong> Centralized audit logging improves accountability, investigation capability, and tamper resistance.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 21 - Key Management</h2>
+<div class="scenario">A development team stores encryption keys directly in application source code. The repository is accessible to many users.</div>
+<p><strong>What is the best recommendation?</strong></p>
+<div class="options">
+<label><input type="radio" name="q21" /> A. Move keys to a secure secrets management solution.</label>
+<label><input type="radio" name="q21" /> B. Rename the key variables to less obvious names.</label>
+<label><input type="radio" name="q21" /> C. Commit a second copy of the keys for backup.</label>
+<label><input type="radio" name="q21" /> D. Send the keys through chat to reduce repository use.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a21')">Show Answer</button>
+<div class="answer" id="a21"><strong>Correct answer:</strong> Move keys to a secure secrets management solution.<br><strong>Explanation:</strong> Secrets should not be hardcoded. Dedicated secrets management provides access control, rotation, and auditing.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 22 - Business Continuity Exercise</h2>
+<div class="scenario">A company wants to validate whether it can restore critical services after a major outage without interrupting production systems.</div>
+<p><strong>Which exercise is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q22" /> A. Tabletop exercise.</label>
+<label><input type="radio" name="q22" /> B. Unannounced full shutdown of all production systems.</label>
+<label><input type="radio" name="q22" /> C. Deleting backups to test user reaction.</label>
+<label><input type="radio" name="q22" /> D. Disabling all incident communication channels.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a22')">Show Answer</button>
+<div class="answer" id="a22"><strong>Correct answer:</strong> Tabletop exercise.<br><strong>Explanation:</strong> A tabletop exercise allows teams to walk through scenarios, roles, decisions, and gaps without directly disrupting production.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 23 - API Abuse Detection</h2>
+<div class="scenario">An API endpoint receives thousands of requests per minute from a single client token. The requests are valid in format but exceed normal usage patterns.</div>
+<p><strong>Which control would most directly reduce abuse?</strong></p>
+<div class="options">
+<label><input type="radio" name="q23" /> A. Rate limiting and token-based monitoring.</label>
+<label><input type="radio" name="q23" /> B. Removing all authentication from the API.</label>
+<label><input type="radio" name="q23" /> C. Increasing error message verbosity for all users.</label>
+<label><input type="radio" name="q23" /> D. Allowing unlimited retries without delay.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a23')">Show Answer</button>
+<div class="answer" id="a23"><strong>Correct answer:</strong> Rate limiting and token-based monitoring.<br><strong>Explanation:</strong> Rate limiting and monitoring help control excessive or abusive API usage while preserving legitimate traffic.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 24 - Mobile Device Loss</h2>
+<div class="scenario">An employee reports that a company-managed phone containing work email was lost in a taxi. The device is enrolled in mobile management.</div>
+<p><strong>Which action should be performed first?</strong></p>
+<div class="options">
+<label><input type="radio" name="q24" /> A. Initiate remote lock or wipe according to policy.</label>
+<label><input type="radio" name="q24" /> B. Wait for the device battery to drain.</label>
+<label><input type="radio" name="q24" /> C. Ask the employee to create a new personal email account.</label>
+<label><input type="radio" name="q24" /> D. Disable all corporate email for the entire company.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a24')">Show Answer</button>
+<div class="answer" id="a24"><strong>Correct answer:</strong> Initiate remote lock or wipe according to policy.<br><strong>Explanation:</strong> Managed lost devices should be locked or wiped quickly to reduce unauthorized access to corporate data.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 25 - Firewall Rule Review</h2>
+<div class="scenario">A firewall rule allows inbound traffic from any source to a management interface on TCP port 22. Only administrators from a known jump host require access.</div>
+<p><strong>Which change best reduces risk?</strong></p>
+<div class="options">
+<label><input type="radio" name="q25" /> A. Restrict access to the jump host source address.</label>
+<label><input type="radio" name="q25" /> B. Allow the same access from the entire internet.</label>
+<label><input type="radio" name="q25" /> C. Move the service to another open port without filtering.</label>
+<label><input type="radio" name="q25" /> D. Disable firewall logging for the management interface.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a25')">Show Answer</button>
+<div class="answer" id="a25"><strong>Correct answer:</strong> Restrict access to the jump host source address.<br><strong>Explanation:</strong> Management access should be limited to authorized sources and monitored. Changing ports without filtering does not meaningfully reduce risk.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 26 - Phishing Report Handling</h2>
+<div class="scenario">A user reports a suspicious attachment before opening it. The message appears to have been delivered to several other employees.</div>
+<p><strong>Which response is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q26" /> A. Search for and quarantine matching messages across mailboxes.</label>
+<label><input type="radio" name="q26" /> B. Tell the user to forward the attachment to all employees.</label>
+<label><input type="radio" name="q26" /> C. Ignore the report because the user did not open it.</label>
+<label><input type="radio" name="q26" /> D. Disable the mail system permanently.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a26')">Show Answer</button>
+<div class="answer" id="a26"><strong>Correct answer:</strong> Search for and quarantine matching messages across mailboxes.<br><strong>Explanation:</strong> Reported phishing should be investigated across the environment to identify and remove similar messages before users interact with them.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 27 - Secure Software Development</h2>
+<div class="scenario">Developers frequently introduce authentication flaws that are discovered late in production testing. The organization wants earlier detection.</div>
+<p><strong>Which approach is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q27" /> A. Integrate security testing into the development pipeline.</label>
+<label><input type="radio" name="q27" /> B. Wait until after public release to review authentication logic.</label>
+<label><input type="radio" name="q27" /> C. Remove authentication from the application.</label>
+<label><input type="radio" name="q27" /> D. Only review code when a customer complains.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a27')">Show Answer</button>
+<div class="answer" id="a27"><strong>Correct answer:</strong> Integrate security testing into the development pipeline.<br><strong>Explanation:</strong> Security testing in the development pipeline helps detect issues earlier and reduces remediation cost.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 28 - DNS Investigation</h2>
+<div class="scenario">Multiple endpoints begin resolving randomly generated subdomains under the same unfamiliar parent domain. Shortly afterward, each endpoint connects to different external IP addresses.</div>
+<p><strong>What activity could this indicate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q28" /> A. Command-and-control using domain generation or fast-changing infrastructure.</label>
+<label><input type="radio" name="q28" /> B. Routine printer discovery.</label>
+<label><input type="radio" name="q28" /> C. Standard local time synchronization.</label>
+<label><input type="radio" name="q28" /> D. Normal keyboard language detection.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a28')">Show Answer</button>
+<div class="answer" id="a28"><strong>Correct answer:</strong> Command-and-control using domain generation or fast-changing infrastructure.<br><strong>Explanation:</strong> Randomized domains and changing infrastructure are commonly associated with malware command-and-control or evasion techniques.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 29 - Role-Based Access</h2>
+<div class="scenario">A hospital wants nurses, doctors, and billing staff to receive permissions based on job function rather than individual one-off assignments.</div>
+<p><strong>Which access model is most suitable?</strong></p>
+<div class="options">
+<label><input type="radio" name="q29" /> A. RBAC</label>
+<label><input type="radio" name="q29" /> B. DAC</label>
+<label><input type="radio" name="q29" /> C. Open access</label>
+<label><input type="radio" name="q29" /> D. Anonymous access</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a29')">Show Answer</button>
+<div class="answer" id="a29"><strong>Correct answer:</strong> RBAC<br><strong>Explanation:</strong> Role-Based Access Control assigns permissions to roles aligned with job responsibilities, simplifying administration and consistency.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 30 - Physical Security Tailgating</h2>
+<div class="scenario">An employee holds a secure door open for an unknown person who is not wearing a badge. The person enters a restricted office area.</div>
+<p><strong>Which security issue is demonstrated?</strong></p>
+<div class="options">
+<label><input type="radio" name="q30" /> A. Tailgating.</label>
+<label><input type="radio" name="q30" /> B. Data deduplication.</label>
+<label><input type="radio" name="q30" /> C. Certificate pinning.</label>
+<label><input type="radio" name="q30" /> D. Network address translation.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a30')">Show Answer</button>
+<div class="answer" id="a30"><strong>Correct answer:</strong> Tailgating.<br><strong>Explanation:</strong> Tailgating occurs when an unauthorized person follows an authorized person into a restricted area without proper authentication.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 31 - Encryption at Rest</h2>
+<div class="scenario">A compliance requirement states that data stored on employee laptops must remain unreadable if the device is lost.</div>
+<p><strong>Which control satisfies this requirement most directly?</strong></p>
+<div class="options">
+<label><input type="radio" name="q31" /> A. Full disk encryption.</label>
+<label><input type="radio" name="q31" /> B. Open guest Wi-Fi.</label>
+<label><input type="radio" name="q31" /> C. Longer email signatures.</label>
+<label><input type="radio" name="q31" /> D. Public DNS hosting.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a31')">Show Answer</button>
+<div class="answer" id="a31"><strong>Correct answer:</strong> Full disk encryption.<br><strong>Explanation:</strong> Full disk encryption protects stored data by making it unreadable without the appropriate key or authentication material.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 32 - Insider Risk Indicator</h2>
+<div class="scenario">A user downloads a large number of documents from projects they do not normally access shortly before submitting a resignation notice.</div>
+<p><strong>What is the most appropriate security response?</strong></p>
+<div class="options">
+<label><input type="radio" name="q32" /> A. Review the activity under insider risk and data handling procedures.</label>
+<label><input type="radio" name="q32" /> B. Immediately publish the user’s name to the whole company.</label>
+<label><input type="radio" name="q32" /> C. Ignore the activity because the user is still employed.</label>
+<label><input type="radio" name="q32" /> D. Delete all project documents from the file server.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a32')">Show Answer</button>
+<div class="answer" id="a32"><strong>Correct answer:</strong> Review the activity under insider risk and data handling procedures.<br><strong>Explanation:</strong> Unusual access and bulk downloads may indicate data misuse. The response should follow approved investigation and privacy-aware procedures.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 33 - Secure Time Synchronization</h2>
+<div class="scenario">Several servers show inconsistent timestamps, making it difficult to reconstruct the order of events during an investigation.</div>
+<p><strong>Which service should be standardized across systems?</strong></p>
+<div class="options">
+<label><input type="radio" name="q33" /> A. NTP</label>
+<label><input type="radio" name="q33" /> B. FTP</label>
+<label><input type="radio" name="q33" /> C. SMTP</label>
+<label><input type="radio" name="q33" /> D. POP3</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a33')">Show Answer</button>
+<div class="answer" id="a33"><strong>Correct answer:</strong> NTP<br><strong>Explanation:</strong> Network Time Protocol synchronizes system clocks, which is essential for accurate event correlation and investigations.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 34 - High Availability Requirement</h2>
+<div class="scenario">A critical application must remain available if a single server fails. The business can tolerate minimal interruption but not a full-day outage.</div>
+<p><strong>Which design is most appropriate?</strong></p>
+<div class="options">
+<label><input type="radio" name="q34" /> A. Redundant servers behind a load balancer.</label>
+<label><input type="radio" name="q34" /> B. A single server with no monitoring.</label>
+<label><input type="radio" name="q34" /> C. Manual restart procedures stored only on one laptop.</label>
+<label><input type="radio" name="q34" /> D. A monthly screenshot of the application homepage.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a34')">Show Answer</button>
+<div class="answer" id="a34"><strong>Correct answer:</strong> Redundant servers behind a load balancer.<br><strong>Explanation:</strong> Redundancy and load balancing improve availability by allowing service continuity if one server fails.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 35 - Privacy Data Minimization</h2>
+<div class="scenario">A marketing form collects passport numbers, home addresses, phone numbers, and employment history for a newsletter signup. The newsletter only requires an email address.</div>
+<p><strong>Which privacy principle is most relevant?</strong></p>
+<div class="options">
+<label><input type="radio" name="q35" /> A. Data minimization.</label>
+<label><input type="radio" name="q35" /> B. Open sharing.</label>
+<label><input type="radio" name="q35" /> C. Privilege escalation.</label>
+<label><input type="radio" name="q35" /> D. Packet fragmentation.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a35')">Show Answer</button>
+<div class="answer" id="a35"><strong>Correct answer:</strong> Data minimization.<br><strong>Explanation:</strong> Data minimization requires collecting only the information necessary for the stated purpose.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 36 - Security Awareness Outcome</h2>
+<div class="scenario">Employees frequently approve unexpected push notifications for sign-in attempts they did not initiate.</div>
+<p><strong>Which risk is most directly represented?</strong></p>
+<div class="options">
+<label><input type="radio" name="q36" /> A. MFA fatigue or push bombing.</label>
+<label><input type="radio" name="q36" /> B. Disk fragmentation.</label>
+<label><input type="radio" name="q36" /> C. Certificate expiration.</label>
+<label><input type="radio" name="q36" /> D. Wireless channel overlap.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a36')">Show Answer</button>
+<div class="answer" id="a36"><strong>Correct answer:</strong> MFA fatigue or push bombing.<br><strong>Explanation:</strong> Attackers may repeatedly trigger push prompts hoping users approve one. Users should deny unexpected prompts and report them.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 37 - Segmentation Validation</h2>
+<div class="scenario">After a network redesign, the security team needs to confirm that workstations cannot directly access database management ports.</div>
+<p><strong>Which method best validates the control?</strong></p>
+<div class="options">
+<label><input type="radio" name="q37" /> A. Perform controlled connectivity testing between segments.</label>
+<label><input type="radio" name="q37" /> B. Assume the diagram is correct without testing.</label>
+<label><input type="radio" name="q37" /> C. Disable all database backups.</label>
+<label><input type="radio" name="q37" /> D. Ask users whether the network feels faster.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a37')">Show Answer</button>
+<div class="answer" id="a37"><strong>Correct answer:</strong> Perform controlled connectivity testing between segments.<br><strong>Explanation:</strong> Segmentation should be validated through controlled testing, firewall log review, and documented expected paths.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 38 - Patch Management Exception</h2>
+<div class="scenario">A critical system cannot be patched immediately because the vendor application breaks during testing. The vulnerability is actively exploited in the wild.</div>
+<p><strong>What should be done while remediation is planned?</strong></p>
+<div class="options">
+<label><input type="radio" name="q38" /> A. Apply compensating controls and formally track the exception.</label>
+<label><input type="radio" name="q38" /> B. Ignore the vulnerability because patching is inconvenient.</label>
+<label><input type="radio" name="q38" /> C. Remove all monitoring to avoid alerts.</label>
+<label><input type="radio" name="q38" /> D. Give all users local administrator rights.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a38')">Show Answer</button>
+<div class="answer" id="a38"><strong>Correct answer:</strong> Apply compensating controls and formally track the exception.<br><strong>Explanation:</strong> When immediate patching is not possible, risk should be reduced with compensating controls and managed through an approved exception process.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 39 - Third-Party Risk</h2>
+<div class="scenario">A vendor will process customer data on behalf of the company. The business owner wants to onboard the vendor quickly.</div>
+<p><strong>Which activity should occur before approval?</strong></p>
+<div class="options">
+<label><input type="radio" name="q39" /> A. Assess the vendor’s security and data protection controls.</label>
+<label><input type="radio" name="q39" /> B. Provide production customer data before contract review.</label>
+<label><input type="radio" name="q39" /> C. Skip all due diligence because the vendor is popular.</label>
+<label><input type="radio" name="q39" /> D. Allow the vendor to choose its own legal obligations.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a39')">Show Answer</button>
+<div class="answer" id="a39"><strong>Correct answer:</strong> Assess the vendor’s security and data protection controls.<br><strong>Explanation:</strong> Third-party risk management requires evaluating vendor controls, contractual obligations, and data handling practices before onboarding.</div>
+</section>
+<section class="question-card">
+<h2>Scenario 40 - Alert False Positive Review</h2>
+<div class="scenario">An IDS alert fires when a vulnerability scanner performs an approved internal scan. The activity matches an attack signature but occurred during an authorized maintenance window.</div>
+<p><strong>How should the analyst classify the alert?</strong></p>
+<div class="options">
+<label><input type="radio" name="q40" /> A. True detection of benign authorized activity.</label>
+<label><input type="radio" name="q40" /> B. Confirmed data breach with no further review.</label>
+<label><input type="radio" name="q40" /> C. Impossible event because scanners never trigger alerts.</label>
+<label><input type="radio" name="q40" /> D. Physical security incident.</label>
+</div>
+<div class="response-box"><label>Candidate notes / rationale:</label><textarea></textarea></div>
+<button onclick="toggleAnswer('a40')">Show Answer</button>
+<div class="answer" id="a40"><strong>Correct answer:</strong> True detection of benign authorized activity.<br><strong>Explanation:</strong> The IDS correctly detected behavior matching a signature, but context shows it was authorized scanner activity rather than malicious exploitation.</div>
+</section>
+</main>
+<footer>Scenario-based cybersecurity practice material. Answers are hidden and can be displayed individually.</footer>
+<script>
+function toggleAnswer(id) { const answer = document.getElementById(id); answer.style.display = answer.style.display === 'block' ? 'none' : 'block'; }
+</script>
+</body>
+</html>

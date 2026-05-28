@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cybersecurity Scenario-Based Practice Set</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #1f2937;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      margin-top: 10px;
+      color: #d1d5db;
+      font-size: 16px;
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 32px auto;
+      padding: 0 18px;
+    }
+
+    .question-card {
+      background: white;
+      border-radius: 12px;
+      padding: 26px;
+      margin-bottom: 26px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      border-left: 6px solid #2563eb;
+    }
+
+    .question-card h2 {
+      margin-top: 0;
+      color: #111827;
+      font-size: 22px;
+    }
+
+    .scenario {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 14px 0;
+      line-height: 1.55;
+    }
+
+    pre {
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .options label {
+      display: block;
+      margin: 10px 0;
+      padding: 11px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      cursor: pointer;
+      line-height: 1.45;
+    }
+
+    .options label:hover {
+      background: #e5e7eb;
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      min-height: 92px;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 14px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .answer {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      background: #ecfdf5;
+      border-left: 5px solid #10b981;
+      border-radius: 8px;
+      line-height: 1.55;
+    }
+
+    .note {
+      background: #fff7ed;
+      border-left: 5px solid #f97316;
+      padding: 14px;
+      border-radius: 8px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .matching-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    .matching-table th, .matching-table td {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .matching-table th {
+      background: #f3f4f6;
+    }
+
+    .small-text {
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Cybersecurity Scenario-Based Practice Set</h1>
+    <p>Professional practice questions focused on practical analysis, decision-making, and technical reasoning.</p>
+  </header>
+
+  <main>
+    <section class="question-card">
+      <h2>Scenario 1 – Security Control Classification</h2>
+      <div class="scenario">
+        A mid-sized organization is reviewing its security program. The security manager asks you to classify several safeguards according to their primary control category. Select the most appropriate category for each safeguard.
+      </div>
+
+      <table class="matching-table">
+        <tr><th>Safeguard</th><th>Your Selection</th></tr>
+        <tr>
+          <td>1. A documented procedure requiring manager approval before access is granted to financial applications</td>
+          <td><select><option>Select one</option><option>Physical</option><option>Technical</option><option>Administrative</option></select></td>
+        </tr>
+        <tr>
+          <td>2. Badge-controlled doors protecting the server room</td>
+          <td><select><option>Select one</option><option>Administrative</option><option>Technical</option><option>Physical</option></select></td>
+        </tr>
+        <tr>
+          <td>3. Endpoint protection software configured to block known malicious executables</td>
+          <td><select><option>Select one</option><option>Physical</option><option>Administrative</option><option>Technical</option></select></td>
+        </tr>
+        <tr>
+          <td>4. Mandatory security awareness training for new employees</td>
+          <td><select><option>Select one</option><option>Technical</option><option>Physical</option><option>Administrative</option></select></td>
+        </tr>
+        <tr>
+          <td>5. Security cameras installed in the data center corridor</td>
+          <td><select><option>Select one</option><option>Technical</option><option>Administrative</option><option>Physical</option></select></td>
+        </tr>
+      </table>
+
+      <button onclick="toggleAnswer('a1')">Show Answer</button>
+      <div class="answer" id="a1">
+        <strong>Recommended answers:</strong><br>
+        1. Administrative<br>
+        2. Physical<br>
+        3. Technical<br>
+        4. Administrative<br>
+        5. Physical
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 2 – Incident Response Prioritization</h2>
+      <div class="scenario">
+        A workstation begins displaying a payment demand, and the user reports that several local files can no longer be opened. The system is currently connected to the corporate network and has mapped drives to departmental file shares.
+      </div>
+
+      <p>Arrange the following actions into the most appropriate operational order.</p>
+
+      <div class="options">
+        <label><input type="text" placeholder="Step 1" /></label>
+        <label><input type="text" placeholder="Step 2" /></label>
+        <label><input type="text" placeholder="Step 3" /></label>
+        <label><input type="text" placeholder="Step 4" /></label>
+        <label><input type="text" placeholder="Step 5" /></label>
+        <label><input type="text" placeholder="Step 6" /></label>
+      </div>
+
+      <div class="note">
+        Available actions: perform root-cause analysis; isolate the affected host; restore data from a verified clean backup; validate the type and scope of malicious activity; rebuild or clean the affected system; document findings and lessons learned.
+      </div>
+
+      <button onclick="toggleAnswer('a2')">Show Answer</button>
+      <div class="answer" id="a2">
+        <strong>Recommended order:</strong><br>
+        1. Isolate the affected host<br>
+        2. Validate the type and scope of malicious activity<br>
+        3. Perform root-cause analysis<br>
+        4. Rebuild or clean the affected system<br>
+        5. Restore data from a verified clean backup<br>
+        6. Document findings and lessons learned
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 3 – Authentication Event Review</h2>
+      <div class="scenario">
+        During routine monitoring, an analyst identifies a sequence of authentication and file access events involving a user account assigned to the HR department.
+      </div>
+
+      <pre>09:14:22 AUTH_FAILURE account=andrei source_ip=185.44.12.9 reason=invalid_password
+09:14:25 AUTH_FAILURE account=andrei source_ip=185.44.12.9 reason=invalid_password
+09:14:29 AUTH_FAILURE account=andrei source_ip=185.44.12.9 reason=invalid_password
+09:14:33 AUTH_FAILURE account=andrei source_ip=185.44.12.9 reason=invalid_password
+09:14:40 AUTH_SUCCESS account=andrei source_ip=185.44.12.9 mfa_result=not_challenged
+09:16:02 OBJECT_ACCESS account=andrei object=HR_Salaries.xlsx action=download</pre>
+
+      <label>1. What activity pattern is most consistent with these events?</label>
+      <input type="text" />
+
+      <label>2. Which event combination increases the concern level?</label>
+      <textarea></textarea>
+
+      <label>3. Which preventive control would have most directly reduced the likelihood of successful account misuse?</label>
+      <input type="text" />
+
+      <button onclick="toggleAnswer('a3')">Show Answer</button>
+      <div class="answer" id="a3">
+        <strong>Recommended answer:</strong><br>
+        1. A successful password guessing or brute-force attempt against a valid account.<br>
+        2. Multiple failed authentications followed by a successful login from the same external IP, then access to a sensitive HR file.<br>
+        3. Enforced multi-factor authentication, combined with lockout/risk-based access policies.
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 4 – Suspicious Email Assessment</h2>
+      <div class="scenario">
+        A user forwards the following message to the security team and asks whether it is safe to follow the instructions.
+      </div>
+
+      <pre>From: IT Support &lt;it-support@secure-login-help.com&gt;
+To: maria.popescu@company.ro
+Subject: Account suspension warning
+
+Dear user,
+
+Your mailbox will be suspended today due to unusual activity.
+Please verify your account immediately:
+
+http://company-login-security.com/verify
+
+Failure to complete this action will result in permanent account deletion.
+
+IT Department</pre>
+
+      <p>Select all observations that should be considered suspicious.</p>
+      <div class="options">
+        <label><input type="checkbox" /> A. The message attempts to create time pressure around account availability.</label>
+        <label><input type="checkbox" /> B. The sender display name references a technology function.</label>
+        <label><input type="checkbox" /> C. The linked domain differs from the recipient organization’s apparent domain.</label>
+        <label><input type="checkbox" /> D. The message uses a non-specific greeting rather than addressing the recipient by name.</label>
+        <label><input type="checkbox" /> E. The sending domain does not appear to be an official organizational domain.</label>
+        <label><input type="checkbox" /> F. The message includes a stated consequence for failing to act.</label>
+      </div>
+
+      <button onclick="toggleAnswer('a4')">Show Answer</button>
+      <div class="answer" id="a4">
+        <strong>Recommended answers:</strong> A, C, D, E, F.<br>
+        B alone is not sufficient; a legitimate technology team may use a similar display name. The concern comes from the domain, link, urgency, generic greeting, and pressure-based wording.
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 5 – Endpoint and Network Event Analysis</h2>
+      <div class="scenario">
+        A security analyst is reviewing correlated DNS, web, process, file access, and outbound network telemetry from a single endpoint.
+      </div>
+
+      <pre>10:02 DNS_QUERY device=PC-044 query=invoice-checker-update.net
+10:03 HTTP_GET device=PC-044 url=hxxp://invoice-checker-update.net/client_update.bin
+10:04 PROCESS_START device=PC-044 image=client_update.bin parent=browser.exe
+10:07 SMB_SESSION device=PC-044 target=FS-17 share=Finance
+10:08 FILE_READ device=PC-044 path=\\FS-17\Finance\payments.xlsx
+10:11 TLS_OUTBOUND device=PC-044 dst_ip=91.210.44.18 bytes_sent=48291023</pre>
+
+      <label>1. Which device should be prioritized for containment?</label>
+      <input type="text" />
+
+      <label>2. Which sequence most strongly supports the conclusion that the user’s browser was involved in initial execution?</label>
+      <textarea></textarea>
+
+      <label>3. Which event most directly suggests potential data exfiltration?</label>
+      <input type="text" />
+
+      <label>4. Which internal resource was accessed after execution?</label>
+      <input type="text" />
+
+      <button onclick="toggleAnswer('a5')">Show Answer</button>
+      <div class="answer" id="a5">
+        <strong>Recommended answer:</strong><br>
+        1. PC-044<br>
+        2. HTTP download from invoice-checker-update.net followed by execution of client_update.bin with browser.exe as the parent process.<br>
+        3. TLS_OUTBOUND to 91.210.44.18 with 48,291,023 bytes sent.<br>
+        4. The Finance share on FS-17, specifically the payments.xlsx file.
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 6 – Data Classification Decision</h2>
+      <div class="scenario">
+        A company is formalizing its data classification standard. Select the most appropriate classification level for each data type based on likely business impact if disclosed without authorization.
+      </div>
+
+      <table class="matching-table">
+        <tr><th>Data Type</th><th>Your Selection</th></tr>
+        <tr>
+          <td>1. Published product descriptions available on the company website</td>
+          <td><select><option>Select one</option><option>Restricted</option><option>Internal</option><option>Public</option><option>Confidential</option></select></td>
+        </tr>
+        <tr>
+          <td>2. Employee handbook available only on the intranet</td>
+          <td><select><option>Select one</option><option>Public</option><option>Restricted</option><option>Internal</option><option>Confidential</option></select></td>
+        </tr>
+        <tr>
+          <td>3. Customer records containing names, addresses, and account identifiers</td>
+          <td><select><option>Select one</option><option>Internal</option><option>Public</option><option>Confidential</option><option>Restricted</option></select></td>
+        </tr>
+        <tr>
+          <td>4. Unreleased merger and acquisition strategy documents</td>
+          <td><select><option>Select one</option><option>Public</option><option>Internal</option><option>Confidential</option><option>Restricted</option></select></td>
+        </tr>
+        <tr>
+          <td>5. Payment card numbers used in transaction processing</td>
+          <td><select><option>Select one</option><option>Confidential</option><option>Restricted</option><option>Public</option><option>Internal</option></select></td>
+        </tr>
+      </table>
+
+      <button onclick="toggleAnswer('a6')">Show Answer</button>
+      <div class="answer" id="a6">
+        <strong>Recommended answers:</strong><br>
+        1. Public<br>
+        2. Internal<br>
+        3. Confidential<br>
+        4. Restricted<br>
+        5. Restricted
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 7 – Technology Selection</h2>
+      <div class="scenario">
+        A security architect is selecting controls to address several business and technical requirements. Match each requirement to the most appropriate technology.
+      </div>
+
+      <table class="matching-table">
+        <tr><th>Requirement</th><th>Your Selection</th></tr>
+        <tr>
+          <td>1. Inspect network traffic and generate alerts for suspicious patterns</td>
+          <td><select><option>Select one</option><option>CASB</option><option>IDS/IPS</option><option>HSM</option><option>NAC</option><option>FDE</option><option>DLP</option></select></td>
+        </tr>
+        <tr>
+          <td>2. Prevent sensitive documents from being sent to unauthorized external recipients</td>
+          <td><select><option>Select one</option><option>FDE</option><option>DLP</option><option>IDS/IPS</option><option>HSM</option><option>NAC</option><option>CASB</option></select></td>
+        </tr>
+        <tr>
+          <td>3. Protect laptop data if the device is lost or stolen</td>
+          <td><select><option>Select one</option><option>IDS/IPS</option><option>NAC</option><option>FDE</option><option>DLP</option><option>CASB</option><option>HSM</option></select></td>
+        </tr>
+        <tr>
+          <td>4. Control whether a device is allowed to connect to the corporate network</td>
+          <td><select><option>Select one</option><option>DLP</option><option>HSM</option><option>NAC</option><option>FDE</option><option>CASB</option><option>IDS/IPS</option></select></td>
+        </tr>
+        <tr>
+          <td>5. Manage and protect cryptographic keys in dedicated hardware</td>
+          <td><select><option>Select one</option><option>CASB</option><option>NAC</option><option>DLP</option><option>HSM</option><option>IDS/IPS</option><option>FDE</option></select></td>
+        </tr>
+      </table>
+
+      <button onclick="toggleAnswer('a7')">Show Answer</button>
+      <div class="answer" id="a7">
+        <strong>Recommended answers:</strong><br>
+        1. IDS/IPS<br>
+        2. DLP<br>
+        3. FDE<br>
+        4. NAC<br>
+        5. HSM
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 8 – Cloud Access Review</h2>
+      <div class="scenario">
+        An organization uses a cloud file-sharing platform. A review identifies that several folders containing sensitive project documentation are accessible through anonymous sharing links.
+      </div>
+
+      <p>Select the three most appropriate actions to reduce risk while preserving legitimate collaboration.</p>
+      <div class="options">
+        <label><input type="checkbox" /> A. Disable all user accounts that have uploaded files to the platform.</label>
+        <label><input type="checkbox" /> B. Review and revoke anonymous links for sensitive folders.</label>
+        <label><input type="checkbox" /> C. Require authenticated access for externally shared sensitive content.</label>
+        <label><input type="checkbox" /> D. Delete the cloud file-sharing platform from all endpoints.</label>
+        <label><input type="checkbox" /> E. Implement periodic access reviews for shared folders.</label>
+        <label><input type="checkbox" /> F. Rename the affected folders to make their contents less obvious.</label>
+      </div>
+
+      <button onclick="toggleAnswer('a8')">Show Answer</button>
+      <div class="answer" id="a8">
+        <strong>Recommended answers:</strong> B, C, E.<br>
+        These actions address overexposure directly while maintaining controlled collaboration.
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 9 – Cryptographic Concept Matching</h2>
+      <div class="scenario">
+        A junior analyst is documenting cryptographic concepts used across several security services. Match each concept to the most accurate description.
+      </div>
+
+      <table class="matching-table">
+        <tr><th>Concept</th><th>Your Selection</th></tr>
+        <tr>
+          <td>1. Hashing</td>
+          <td><select><option>Select one</option><option>Uses separate but mathematically related keys</option><option>Binds an identity to a public key</option><option>Produces a fixed-length digest from input data</option><option>Adds unpredictable data before a password is processed</option><option>Uses one shared secret for encryption and decryption</option></select></td>
+        </tr>
+        <tr>
+          <td>2. Symmetric encryption</td>
+          <td><select><option>Select one</option><option>Adds unpredictable data before a password is processed</option><option>Uses one shared secret for encryption and decryption</option><option>Binds an identity to a public key</option><option>Produces a fixed-length digest from input data</option><option>Uses separate but mathematically related keys</option></select></td>
+        </tr>
+        <tr>
+          <td>3. Asymmetric encryption</td>
+          <td><select><option>Select one</option><option>Produces a fixed-length digest from input data</option><option>Uses separate but mathematically related keys</option><option>Uses one shared secret for encryption and decryption</option><option>Adds unpredictable data before a password is processed</option><option>Binds an identity to a public key</option></select></td>
+        </tr>
+        <tr>
+          <td>4. Digital certificate</td>
+          <td><select><option>Select one</option><option>Adds unpredictable data before a password is processed</option><option>Uses one shared secret for encryption and decryption</option><option>Produces a fixed-length digest from input data</option><option>Binds an identity to a public key</option><option>Uses separate but mathematically related keys</option></select></td>
+        </tr>
+        <tr>
+          <td>5. Salt</td>
+          <td><select><option>Select one</option><option>Binds an identity to a public key</option><option>Uses separate but mathematically related keys</option><option>Adds unpredictable data before a password is processed</option><option>Uses one shared secret for encryption and decryption</option><option>Produces a fixed-length digest from input data</option></select></td>
+        </tr>
+      </table>
+
+      <button onclick="toggleAnswer('a9')">Show Answer</button>
+      <div class="answer" id="a9">
+        <strong>Recommended answers:</strong><br>
+        1. Hashing — Produces a fixed-length digest from input data<br>
+        2. Symmetric encryption — Uses one shared secret for encryption and decryption<br>
+        3. Asymmetric encryption — Uses separate but mathematically related keys<br>
+        4. Digital certificate — Binds an identity to a public key<br>
+        5. Salt — Adds unpredictable data before a password is processed
+      </div>
+    </section>
+
+    <section class="question-card">
+      <h2>Scenario 10 – Risk Response Selection</h2>
+      <div class="scenario">
+        A business unit identifies several risks during a quarterly review. Match each management decision to the most appropriate risk response strategy.
+      </div>
+
+      <table class="matching-table">
+        <tr><th>Decision</th><th>Your Selection</th></tr>
+        <tr>
+          <td>1. Purchase cyber insurance for a risk that cannot be fully eliminated.</td>
+          <td><select><option>Select one</option><option>Avoid</option><option>Accept</option><option>Transfer</option><option>Mitigate</option></select></td>
+        </tr>
+        <tr>
+          <td>2. Decommission an exposed legacy service because the business no longer requires it.</td>
+          <td><select><option>Select one</option><option>Mitigate</option><option>Transfer</option><option>Avoid</option><option>Accept</option></select></td>
+        </tr>
+        <tr>
+          <td>3. Deploy additional monitoring and access controls to reduce likelihood and impact.</td>
+          <td><select><option>Select one</option><option>Accept</option><option>Avoid</option><option>Mitigate</option><option>Transfer</option></select></td>
+        </tr>
+        <tr>
+          <td>4. Formally approve a low-impact risk because treatment would cost more than the expected loss.</td>
+          <td><select><option>Select one</option><option>Transfer</option><option>Mitigate</option><option>Accept</option><option>Avoid</option></select></td>
+        </tr>
+      </table>
+
+      <button onclick="toggleAnswer('a10')">Show Answer</button>
+      <div class="answer" id="a10">
+        <strong>Recommended answers:</strong><br>
+        1. Transfer<br>
+        2. Avoid<br>
+        3. Mitigate<br>
+        4. Accept
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Scenario-based cybersecurity practice material. Answers are hidden and can be displayed individually.
+  </footer>
+
+  <script>
+    function toggleAnswer(id) {
+      const answer = document.getElementById(id);
+      if (answer.style.display === 'block') {
+        answer.style.display = 'none';
+      } else {
+        answer.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>
